@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Oefeningenlog</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ===== Auth screen ===== -->
+<div class="auth-screen" id="authScreen">
+  <div class="auth-card">
+    <div class="auth-brand">
+      <span class="brand-mark">＋</span>
+      <h1>Oefeningenlog</h1>
+    </div>
+    <p class="auth-sub">Log in of maak een account om je oefeningen en foto's overal te gebruiken.</p>
+    <form id="authForm" autocomplete="on">
+      <label class="auth-label" for="authEmail">E-mailadres</label>
+      <input class="auth-input" id="authEmail" type="email" autocomplete="username" placeholder="jij@voorbeeld.be" required>
+      <label class="auth-label" for="authPassword">Wachtwoord</label>
+      <input class="auth-input" id="authPassword" type="password" autocomplete="current-password" placeholder="Minstens 6 tekens" required>
+      <p class="auth-error" id="authError"></p>
+      <button class="btn-primary" id="authSubmitLogin" type="submit">Inloggen</button>
+      <button class="btn-ghost auth-signup-btn" id="authSubmitSignup" type="button">Nieuw account aanmaken</button>
+    </form>
+    <p class="auth-hint">Nieuw hier? Vul een e-mailadres en zelfgekozen wachtwoord in en tik op "Nieuw account aanmaken". Gebruik daarna dezelfde gegevens om op je andere toestel in te loggen.</p>
+  </div>
+</div>
+
+<!-- ===== App ===== -->
+<div id="appRoot" hidden>
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <span class="brand-mark">＋</span>
+      <div class="brand-text">
+        <h1>Oefeningenlog</h1>
+        <p id="subcount">… oefeningen</p>
+      </div>
+    </div>
+    <button class="logout-btn" id="logoutBtn" title="Uitloggen">⎋</button>
+  </div>
+  <div class="searchwrap">
+    <input id="search" type="search" placeholder="Zoek op naam, spier, materiaal…" autocomplete="off">
+  </div>
+  <p class="user-email" id="userEmail"></p>
+</header>
+
+<div class="filterbar" id="filterbar">
+  <button class="filter-toggle" id="filterToggle" aria-expanded="false">
+    <span>Filters</span>
+    <span class="filter-count" id="filterCount" hidden>0</span>
+    <svg class="chev" width="10" height="6" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <div class="active-chips" id="activeChips"></div>
+</div>
+
+<div class="filter-panel" id="filterPanel" hidden>
+  <div class="filter-group">
+    <h3>Type</h3>
+    <div class="chip-row" data-cat="type" id="chips-type"></div>
+  </div>
+  <div class="filter-group">
+    <h3>Materiaal</h3>
+    <div class="chip-row" data-cat="materiaal" id="chips-materiaal"></div>
+  </div>
+  <div class="filter-group">
+    <h3>Spiergroep</h3>
+    <div class="chip-row" data-cat="spiergroep" id="chips-spiergroep"></div>
+  </div>
+  <div class="filter-group">
+    <h3>Bron</h3>
+    <div class="chip-row" data-cat="bron" id="chips-bron"></div>
+  </div>
+  <div class="filter-actions">
+    <button id="clearFilters" class="btn-ghost">Wis filters</button>
+    <button id="applyFilters" class="btn-primary">Toon resultaten</button>
+  </div>
+</div>
+
+<main id="results"></main>
+
+<div class="empty" id="emptyState" hidden>
+  <p>Geen oefeningen gevonden.</p>
+  <button id="emptyReset" class="btn-ghost">Wis zoekopdracht en filters</button>
+</div>
+
+<div class="detail-overlay" id="overlay" hidden>
+  <div class="detail-sheet" id="sheet"></div>
+</div>
+</div>
+
+<script src="exercises.js"></script>
+<script type="module" src="app.js"></script>
+</body>
+</html>
