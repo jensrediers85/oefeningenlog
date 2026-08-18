@@ -47,9 +47,14 @@ const state = { q: "", type: new Set(), materiaal: new Set(), spiergroep: new Se
 function photoDocId(exId){ return `${currentUser.uid}_${exId}`; }
 
 async function getPhotos(exId){
-  const ref = doc(db, "exercisePhotos", photoDocId(exId));
-  const snap = await getDoc(ref);
-  return snap.exists() ? (snap.data().photos || []) : [];
+  try{
+    const ref = doc(db, "exercisePhotos", photoDocId(exId));
+    const snap = await getDoc(ref);
+    return snap.exists() ? (snap.data().photos || []) : [];
+  }catch(err){
+    console.error("getPhotos error", err);
+    return [];
+  }
 }
 
 async function setPhotos(exId, photos){
@@ -218,6 +223,9 @@ async function openDetail(ex){
 
   const tagHtml = (arr) => arr.map(t => `<span class="mini-tag">${t}</span>`).join("");
 
+  // Show the sheet immediately so a Firestore hiccup never blocks the UI
+  overlay.hidden = false;
+
   sheet.innerHTML = `
     <div class="sheet-handle"></div>
     <button class="sheet-close" id="sheetClose">×</button>
@@ -267,7 +275,12 @@ async function openDetail(ex){
   }
 
   statusEl.textContent = "Laden…";
-  const photos = await getPhotos(ex.id);
+  let photos = [];
+  try{
+    photos = await getPhotos(ex.id);
+  }catch(err){
+    console.error("Kon foto's niet laden", err);
+  }
   renderPhotos(photos);
   statusEl.textContent = "";
 
@@ -293,7 +306,6 @@ async function openDetail(ex){
   });
 
   sheet.querySelector("#sheetClose").addEventListener("click", closeDetail);
-  overlay.hidden = false;
   overlay.addEventListener("click", overlayClickClose);
 }
 function overlayClickClose(e){ if(e.target.id === "overlay") closeDetail(); }
