@@ -5,7 +5,7 @@ import {
   createUserWithEmailAndPassword, signOut, setPersistence, browserLocalPersistence
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
-  getFirestore, doc, getDoc, setDoc, collection, query, where, getDocs
+  getFirestore, doc, getDoc, setDoc, deleteDoc, collection, query, where, getDocs
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -25,6 +25,8 @@ setPersistence(auth, browserLocalPersistence).catch(()=>{});
 
 let currentUser = null;
 let photoIndex = new Set();
+let tagOverrides = new Map(); // exerciseId -> {type, materiaal, spiergroep}
+let viewExercises = [];
 
 const MONTH_ORDER = [
 "Augustus 2023","November 2023","December 2023","Februari 2024","Maart 2024","April 2024","Mei 2024",
@@ -73,6 +75,50 @@ async function loadPhotoIndex(){
       if(data.photos && data.photos.length) photoIndex.add(String(data.exerciseId));
     });
   }catch(e){ console.error("Kon foto-index niet laden", e); }
+}
+
+function effectiveExercise(ex){
+  const o = tagOverrides.get(ex.id);
+  if(!o) return ex;
+  return Object.assign({}, ex, {
+    type: o.type || ex.type,
+    materiaal: o.materiaal || ex.materiaal,
+    spiergroep: o.spiergroep || ex.spiergroep
+  });
+}
+
+async function loadTagOverrides(){
+  tagOverrides = new Map();
+  try{
+    const qy = query(collection(db, "exerciseTags"), where("uid", "==", currentUser.uid));
+    const snap = await getDocs(qy);
+    snap.forEach(d => {
+      const data = d.data();
+      tagOverrides.set(data.exerciseId, { type: data.type||[], materiaal: data.materiaal||[], spiergroep: data.spiergroep||[] });
+    });
+  }catch(e){ console.error("Kon tag-aanpassingen niet laden", e); }
+  viewExercises = EXERCISES.map(effectiveExercise);
+}
+
+async function saveTagOverride(exId, tags){
+  const ref = doc(db, "exerciseTags", `${currentUser.uid}_${exId}`);
+  await setDoc(ref, { uid: currentUser.uid, exerciseId: exId, type: tags.type, materiaal: tags.materiaal, spiergroep: tags.spiergroep });
+  tagOverrides.set(exId, tags);
+  const idx = viewExercises.findIndex(e => e.id === exId);
+  if(idx > -1){
+    const base = EXERCISES.find(e => e.id === exId);
+    viewExercises[idx] = Object.assign({}, base, tags);
+  }
+}
+
+async function resetTagOverride(exId){
+  try{
+    const ref = doc(db, "exerciseTags", `${currentUser.uid}_${exId}`);
+    await deleteDoc(ref);
+  }catch(e){ console.error("Kon tag-aanpassing niet verwijderen", e); }
+  tagOverrides.delete(exId);
+  const idx = viewExercises.findIndex(e => e.id === exId);
+  if(idx > -1){ viewExercises[idx] = EXERCISES.find(e => e.id === exId); }
 }
 
 function fileToCompressedDataURL(file, maxDim=900, quality=0.62){
@@ -139,7 +185,7 @@ function buildChips(){
 }
 
 function syncChipVisuals(){
-  document.querySelectorAll(".tag-chip").forEach(b => {
+  document.querySelectorAll("#filterPanel .tag-chip").forEach(b => {
     const on = state[b.dataset.cat].has(b.dataset.val);
     b.classList.toggle("on", on);
   });
@@ -171,7 +217,7 @@ function renderResults(){
   const empty = document.getElementById("emptyState");
   main.innerHTML = "";
 
-  const filtered = EXERCISES.filter(matches);
+  const filtered = viewExercises.filter(matches);
   document.getElementById("subcount").textContent = `${EXERCISES.length} oefeningen · ${filtered.length} getoond`;
 
   if(filtered.length === 0){
@@ -237,11 +283,23 @@ async function openDetail(ex){
     </div>
     <p class="sheet-desc">${ex.beschrijving}</p>
     <p class="sheet-tags-title">Type</p>
-    <div class="sheet-tags">${tagHtml(ex.type)}</div>
+    <div class="sheet-tags" id="sheetTagsType">${tagHtml(ex.type)}</div>
     <p class="sheet-tags-title">Materiaal</p>
-    <div class="sheet-tags">${tagHtml(ex.materiaal)}</div>
+    <div class="sheet-tags" id="sheetTagsMateriaal">${tagHtml(ex.materiaal)}</div>
     <p class="sheet-tags-title">Spiergroep</p>
-    <div class="sheet-tags">${tagHtml(ex.spiergroep)}</div>
+    <div class="sheet-tags" id="sheetTagsSpiergroep">${tagHtml(ex.spiergroep)}</div>
+
+    <button class="btn-ghost edit-tags-btn" id="editTagsBtn">Tags bewerken</button>
+    <div class="tag-editor" id="tagEditor" hidden>
+      <p class="filter-group-title">Type</p>
+      <div class="chip-row" id="editorType"></div>
+      <p class="filter-group-title">Materiaal</p>
+      <div class="chip-row" id="editorMateriaal"></div>
+      <p class="filter-group-title">Spiergroep</p>
+      <div class="chip-row" id="editorSpiergroep"></div>
+      <button class="btn-ghost reset-tags-btn" id="resetTagsBtn">Herstel standaard tags</button>
+      <p id="tagEditStatus" style="font-size:12px;color:var(--ink-soft);margin-top:8px;"></p>
+    </div>
 
     <div class="photo-section">
       <p class="sheet-tags-title">Eigen foto's</p>
@@ -307,6 +365,76 @@ async function openDetail(ex){
 
   sheet.querySelector("#sheetClose").addEventListener("click", closeDetail);
   overlay.addEventListener("click", overlayClickClose);
+
+  // ===== Tag editor =====
+  let workingTags = { type: [...ex.type], materiaal: [...ex.materiaal], spiergroep: [...ex.spiergroep] };
+  const editTagsBtn = sheet.querySelector("#editTagsBtn");
+  const tagEditor = sheet.querySelector("#tagEditor");
+  const tagEditStatus = sheet.querySelector("#tagEditStatus");
+
+  function refreshTagDisplays(){
+    sheet.querySelector("#sheetTagsType").innerHTML = tagHtml(workingTags.type);
+    sheet.querySelector("#sheetTagsMateriaal").innerHTML = tagHtml(workingTags.materiaal);
+    sheet.querySelector("#sheetTagsSpiergroep").innerHTML = tagHtml(workingTags.spiergroep);
+  }
+
+  function buildEditorChips(containerId, options, cat){
+    const el = sheet.querySelector("#" + containerId);
+    el.innerHTML = "";
+    options.forEach(val => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "tag-chip" + (workingTags[cat].includes(val) ? " on" : "");
+      b.textContent = val;
+      b.addEventListener("click", async () => {
+        const idx = workingTags[cat].indexOf(val);
+        if(idx > -1){ workingTags[cat].splice(idx, 1); } else { workingTags[cat].push(val); }
+        b.classList.toggle("on");
+        refreshTagDisplays();
+        tagEditStatus.textContent = "Opslaan…";
+        try{
+          await saveTagOverride(ex.id, workingTags);
+          tagEditStatus.textContent = "Opgeslagen.";
+          render();
+          setTimeout(() => { if(tagEditStatus.textContent === "Opgeslagen.") tagEditStatus.textContent = ""; }, 1500);
+        }catch(err){
+          console.error(err);
+          tagEditStatus.textContent = "Kon niet opslaan — probeer opnieuw.";
+        }
+      });
+      el.appendChild(b);
+    });
+  }
+
+  editTagsBtn.addEventListener("click", () => {
+    const opening = tagEditor.hidden;
+    tagEditor.hidden = !opening;
+    editTagsBtn.textContent = opening ? "Tags verbergen" : "Tags bewerken";
+    if(opening){
+      buildEditorChips("editorType", TYPE_ORDER, "type");
+      buildEditorChips("editorMateriaal", MATERIAAL_ORDER, "materiaal");
+      buildEditorChips("editorSpiergroep", SPIER_ORDER, "spiergroep");
+    }
+  });
+
+  sheet.querySelector("#resetTagsBtn").addEventListener("click", async () => {
+    tagEditStatus.textContent = "Herstellen…";
+    try{
+      await resetTagOverride(ex.id);
+      const base = EXERCISES.find(e => e.id === ex.id);
+      workingTags = { type: [...base.type], materiaal: [...base.materiaal], spiergroep: [...base.spiergroep] };
+      refreshTagDisplays();
+      buildEditorChips("editorType", TYPE_ORDER, "type");
+      buildEditorChips("editorMateriaal", MATERIAAL_ORDER, "materiaal");
+      buildEditorChips("editorSpiergroep", SPIER_ORDER, "spiergroep");
+      tagEditStatus.textContent = "Teruggezet naar standaard.";
+      render();
+      setTimeout(() => { if(tagEditStatus.textContent === "Teruggezet naar standaard.") tagEditStatus.textContent = ""; }, 1500);
+    }catch(err){
+      console.error(err);
+      tagEditStatus.textContent = "Kon niet herstellen — probeer opnieuw.";
+    }
+  });
 }
 function overlayClickClose(e){ if(e.target.id === "overlay") closeDetail(); }
 function closeDetail(){
@@ -350,6 +478,7 @@ async function bootApp(){
   if(!wired){ buildChips(); wireControls(); wired = true; }
   document.getElementById("userEmail").textContent = currentUser.email;
   await loadPhotoIndex();
+  await loadTagOverrides();
   render();
 }
 
