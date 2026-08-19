@@ -29,7 +29,8 @@ let noteIndex = new Set();
 let tagOverrides = new Map(); // exerciseId -> {type, materiaal, spiergroep}
 let repsOverrides = new Map(); // exerciseId -> sets_reps string
 let weightOverrides = new Map(); // exerciseId -> weight string (kg), only meaningful for Dumbells exercises
-let deletedSet = new Set(); // exerciseIds (as strings) the user has hidden
+let deletedSet = new Set(); // exerciseIds (as strings) permanently removed, no in-app restore
+let hiddenSet = new Set(); // exerciseIds (as strings) hidden, restorable via "Verborgen oefeningen"
 let viewExercises = [];
 
 const MONTH_ORDER = [
@@ -123,7 +124,7 @@ async function loadRepsOverrides(){
 }
 
 function rebuildViewExercises(){
-  viewExercises = EXERCISES.filter(e => !deletedSet.has(String(e.id))).map(effectiveExercise);
+  viewExercises = EXERCISES.filter(e => !deletedSet.has(String(e.id)) && !hiddenSet.has(String(e.id))).map(effectiveExercise);
 }
 
 async function loadDeletedSet(){
@@ -135,7 +136,33 @@ async function loadDeletedSet(){
       const data = d.data();
       deletedSet.add(String(data.exerciseId));
     });
+  }catch(e){ console.error("Kon verwijderde oefeningen niet laden", e); }
+}
+
+async function loadHiddenSet(){
+  hiddenSet = new Set();
+  try{
+    const qy = query(collection(db, "exerciseHidden"), where("uid", "==", currentUser.uid));
+    const snap = await getDocs(qy);
+    snap.forEach(d => {
+      const data = d.data();
+      hiddenSet.add(String(data.exerciseId));
+    });
   }catch(e){ console.error("Kon verborgen oefeningen niet laden", e); }
+}
+
+async function hideExercise(exId){
+  const ref = doc(db, "exerciseHidden", `${currentUser.uid}_${exId}`);
+  await setDoc(ref, { uid: currentUser.uid, exerciseId: exId, hidden: true });
+  hiddenSet.add(String(exId));
+  rebuildViewExercises();
+}
+
+async function unhideExercise(exId){
+  const ref = doc(db, "exerciseHidden", `${currentUser.uid}_${exId}`);
+  await deleteDoc(ref);
+  hiddenSet.delete(String(exId));
+  rebuildViewExercises();
 }
 
 async function deleteExercise(exId){
@@ -450,8 +477,10 @@ async function openDetail(ex){
     </div>
 
     <div class="danger-section">
+      <button class="hide-exercise-btn" id="hideExerciseBtn">Oefening verbergen</button>
+      <p style="font-size:12px;color:var(--ink-soft);margin:6px 0 14px;">Haalt 'm uit je lijst, maar je kan 'm terugvinden en herstellen via "Verborgen oefeningen" bij de filters.</p>
       <button class="delete-exercise-btn" id="deleteExerciseBtn">Oefening verwijderen</button>
-      <p style="font-size:12px;color:var(--ink-soft);margin-top:6px;">Verbergt deze oefening enkel voor jou, bv. bij dubbels. De rest van je data blijft ongemoeid.</p>
+      <p style="font-size:12px;color:var(--ink-soft);margin-top:6px;">Definitiever: geen herstelknop in de app. Bv. voor echte dubbels. Laat het weten als je 'm toch terug wil.</p>
     </div>
   `;
 
@@ -461,8 +490,20 @@ async function openDetail(ex){
   overlay.addEventListener("click", overlayClickClose);
 
   try{
+    sheet.querySelector("#hideExerciseBtn").addEventListener("click", async () => {
+      const ok = confirm(`"${ex.naam}" verbergen? Je vindt 'm terug via "Verborgen oefeningen" bij de filters.`);
+      if(!ok) return;
+      try{
+        await hideExercise(ex.id);
+        closeDetail();
+        render();
+      }catch(err){
+        console.error("Kon oefening niet verbergen", err);
+        alert("Er ging iets mis. Probeer opnieuw.");
+      }
+    });
     sheet.querySelector("#deleteExerciseBtn").addEventListener("click", async () => {
-      const ok = confirm(`"${ex.naam}" verwijderen uit je lijst? Dit kan niet ongedaan worden gemaakt.`);
+      const ok = confirm(`"${ex.naam}" verwijderen uit je lijst? Dit kan niet ongedaan worden gemaakt in de app.`);
       if(!ok) return;
       try{
         await deleteExercise(ex.id);
@@ -474,7 +515,7 @@ async function openDetail(ex){
       }
     });
   }catch(err){
-    console.error("Fout bij opbouwen van verwijderknop", err);
+    console.error("Fout bij opbouwen van verberg/verwijder-knoppen", err);
   }
 
   // ===== Editable reps/sets badge =====
@@ -713,6 +754,58 @@ async function openDetail(ex){
   }
 }
 function overlayClickClose(e){ if(e.target.id === "overlay") closeDetail(); }
+
+function openHiddenManager(){
+  const overlay = document.getElementById("overlay");
+  const sheet = document.getElementById("sheet");
+  document.getElementById("filterPanel").hidden = true;
+  document.getElementById("filterToggle").setAttribute("aria-expanded", "false");
+
+  function render_(){
+    const hiddenExercises = EXERCISES.filter(e => hiddenSet.has(String(e.id)))
+      .sort((a,b) => monthIndex(b.maand) - monthIndex(a.maand));
+    const rows = hiddenExercises.length
+      ? hiddenExercises.map(e => `
+        <div class="hidden-row" data-id="${e.id}">
+          <div>
+            <div class="hidden-row-name">${e.naam}</div>
+            <div class="hidden-row-month">${e.maand}</div>
+          </div>
+          <button class="btn-ghost restore-btn" data-id="${e.id}">Herstel</button>
+        </div>
+      `).join("")
+      : `<p style="color:var(--ink-soft); font-size:14px;">Geen verborgen oefeningen.</p>`;
+
+    sheet.innerHTML = `
+      <div class="sheet-handle"></div>
+      <button class="sheet-close" id="sheetClose">×</button>
+      <h2 class="sheet-title">Verborgen oefeningen</h2>
+      <p class="sheet-desc" style="margin-bottom:16px;">${hiddenExercises.length} verborgen. Tik "Herstel" om terug te zetten in je lijst.</p>
+      ${rows}
+    `;
+    sheet.querySelector("#sheetClose").addEventListener("click", closeDetail);
+    sheet.querySelectorAll(".restore-btn").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const exId = parseInt(btn.dataset.id, 10);
+        btn.disabled = true;
+        btn.textContent = "Herstellen…";
+        try{
+          await unhideExercise(exId);
+          render(); // refresh main list
+          render_(); // refresh this manager list
+        }catch(err){
+          console.error(err);
+          btn.disabled = false;
+          btn.textContent = "Herstel";
+        }
+      });
+    });
+  }
+
+  render_();
+  overlay.hidden = false;
+  overlay.addEventListener("click", overlayClickClose);
+}
 function closeDetail(){
   document.getElementById("overlay").hidden = true;
 }
@@ -749,6 +842,7 @@ function wireControls(){
   document.getElementById("logoutBtn").addEventListener("click", () => {
     signOut(auth).then(() => location.reload());
   });
+  document.getElementById("showHiddenBtn").addEventListener("click", openHiddenManager);
 }
 
 let wired = false;
@@ -761,6 +855,7 @@ async function bootApp(){
   await loadNoteIndex();
   await loadWeightOverrides();
   await loadDeletedSet();
+  await loadHiddenSet();
   rebuildViewExercises();
   render();
 }
