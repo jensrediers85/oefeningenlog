@@ -25,6 +25,7 @@ setPersistence(auth, browserLocalPersistence).catch(()=>{});
 
 let currentUser = null;
 let photoIndex = new Set();
+let noteIndex = new Set();
 let tagOverrides = new Map(); // exerciseId -> {type, materiaal, spiergroep}
 let viewExercises = [];
 
@@ -119,6 +120,36 @@ async function resetTagOverride(exId){
   tagOverrides.delete(exId);
   const idx = viewExercises.findIndex(e => e.id === exId);
   if(idx > -1){ viewExercises[idx] = EXERCISES.find(e => e.id === exId); }
+}
+
+// ===== Personal note per exercise (e.g. "laatst gedaan: 3x12") =====
+async function getNote(exId){
+  try{
+    const ref = doc(db, "exerciseNotes", `${currentUser.uid}_${exId}`);
+    const snap = await getDoc(ref);
+    return snap.exists() ? (snap.data().note || "") : "";
+  }catch(err){
+    console.error("getNote error", err);
+    return "";
+  }
+}
+
+async function saveNote(exId, note){
+  const ref = doc(db, "exerciseNotes", `${currentUser.uid}_${exId}`);
+  await setDoc(ref, { uid: currentUser.uid, exerciseId: exId, note });
+  if(note && note.trim()){ noteIndex.add(String(exId)); } else { noteIndex.delete(String(exId)); }
+}
+
+async function loadNoteIndex(){
+  noteIndex = new Set();
+  try{
+    const qy = query(collection(db, "exerciseNotes"), where("uid", "==", currentUser.uid));
+    const snap = await getDocs(qy);
+    snap.forEach(d => {
+      const data = d.data();
+      if(data.note && data.note.trim()) noteIndex.add(String(data.exerciseId));
+    });
+  }catch(e){ console.error("Kon notitie-index niet laden", e); }
 }
 
 function fileToCompressedDataURL(file, maxDim=900, quality=0.62){
@@ -252,12 +283,13 @@ function renderCard(ex){
     ...ex.spiergroep.map(t => `<span class="mini-tag">${t}</span>`),
   ].join("");
   const hasPhoto = photoIndex.has(String(ex.id));
+  const hasNote = noteIndex.has(String(ex.id));
   card.innerHTML = `
     <div class="card-top">
       <div class="card-name">${ex.naam}</div>
       ${ex.sets_reps && ex.sets_reps !== "-" ? `<div class="card-sr">${ex.sets_reps}</div>` : ""}
     </div>
-    <div class="card-tags">${tags}${hasPhoto ? '<span class="mini-tag card-video-dot">foto</span>' : ""}</div>
+    <div class="card-tags">${tags}${hasPhoto ? '<span class="mini-tag card-video-dot">foto</span>' : ""}${hasNote ? '<span class="mini-tag card-video-dot">notitie</span>' : ""}</div>
   `;
   card.addEventListener("click", () => openDetail(ex));
   return card;
@@ -282,6 +314,13 @@ async function openDetail(ex){
       ${ex.sets_reps && ex.sets_reps !== "-" ? `<span><b>${ex.sets_reps}</b></span>` : ""}
     </div>
     <p class="sheet-desc">${ex.beschrijving}</p>
+
+    <div class="note-section">
+      <p class="sheet-tags-title">Eigen notitie</p>
+      <input type="text" class="note-input" id="noteInput" placeholder="bv. laatst gedaan: 3x12" maxlength="200">
+      <p id="noteStatus" style="font-size:12px;color:var(--ink-soft);margin-top:6px;"></p>
+    </div>
+
     <p class="sheet-tags-title">Type</p>
     <div class="sheet-tags" id="sheetTagsType">${tagHtml(ex.type)}</div>
     <p class="sheet-tags-title">Materiaal</p>
@@ -314,6 +353,32 @@ async function openDetail(ex){
   // always be dismissible no matter what goes wrong below.
   sheet.querySelector("#sheetClose").addEventListener("click", closeDetail);
   overlay.addEventListener("click", overlayClickClose);
+
+  // ===== Personal note =====
+  try{
+    const noteInput = sheet.querySelector("#noteInput");
+    const noteStatus = sheet.querySelector("#noteStatus");
+    getNote(ex.id).then(note => { noteInput.value = note; });
+    let noteTimer = null;
+    noteInput.addEventListener("input", () => {
+      noteStatus.textContent = "Typen…";
+      clearTimeout(noteTimer);
+      noteTimer = setTimeout(async () => {
+        noteStatus.textContent = "Opslaan…";
+        try{
+          await saveNote(ex.id, noteInput.value);
+          noteStatus.textContent = "Opgeslagen.";
+          render();
+          setTimeout(() => { if(noteStatus.textContent === "Opgeslagen.") noteStatus.textContent = ""; }, 1200);
+        }catch(err){
+          console.error(err);
+          noteStatus.textContent = "Kon niet opslaan.";
+        }
+      }, 600);
+    });
+  }catch(err){
+    console.error("Fout bij opbouwen van notitieveld", err);
+  }
 
   const grid = sheet.querySelector("#photoGrid");
   const statusEl = sheet.querySelector("#photoStatus");
@@ -488,6 +553,7 @@ async function bootApp(){
   document.getElementById("userEmail").textContent = currentUser.email;
   await loadPhotoIndex();
   await loadTagOverrides();
+  await loadNoteIndex();
   render();
 }
 

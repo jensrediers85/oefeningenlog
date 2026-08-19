@@ -363,6 +363,12 @@ main{padding:14px 18px 40px;}
   font-size:15px; line-height:1.55; color:var(--ink);
   margin-bottom:18px;
 }
+.note-section{ margin-bottom:6px; }
+.note-input{
+  width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:10px;
+  font-size:15px; background:var(--paper-raised); color:var(--ink);
+}
+.note-input:focus{ outline:none; border-color:var(--petrol); }
 .sheet-tags-title{font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-soft); font-weight:700; margin:16px 0 8px;}
 .sheet-tags{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:6px;}
 
