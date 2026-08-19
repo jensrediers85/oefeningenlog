@@ -27,6 +27,7 @@ let currentUser = null;
 let photoIndex = new Set();
 let noteIndex = new Set();
 let tagOverrides = new Map(); // exerciseId -> {type, materiaal, spiergroep}
+let repsOverrides = new Map(); // exerciseId -> sets_reps string
 let viewExercises = [];
 
 const MONTH_ORDER = [
@@ -80,12 +81,19 @@ async function loadPhotoIndex(){
 
 function effectiveExercise(ex){
   const o = tagOverrides.get(ex.id);
-  if(!o) return ex;
-  return Object.assign({}, ex, {
-    type: o.type || ex.type,
-    materiaal: o.materiaal || ex.materiaal,
-    spiergroep: o.spiergroep || ex.spiergroep
-  });
+  const r = repsOverrides.get(ex.id);
+  let merged = ex;
+  if(o){
+    merged = Object.assign({}, merged, {
+      type: o.type || merged.type,
+      materiaal: o.materiaal || merged.materiaal,
+      spiergroep: o.spiergroep || merged.spiergroep
+    });
+  }
+  if(r !== undefined){
+    merged = Object.assign({}, merged, { sets_reps: r });
+  }
+  return merged;
 }
 
 async function loadTagOverrides(){
@@ -98,6 +106,21 @@ async function loadTagOverrides(){
       tagOverrides.set(data.exerciseId, { type: data.type||[], materiaal: data.materiaal||[], spiergroep: data.spiergroep||[] });
     });
   }catch(e){ console.error("Kon tag-aanpassingen niet laden", e); }
+}
+
+async function loadRepsOverrides(){
+  repsOverrides = new Map();
+  try{
+    const qy = query(collection(db, "exerciseReps"), where("uid", "==", currentUser.uid));
+    const snap = await getDocs(qy);
+    snap.forEach(d => {
+      const data = d.data();
+      repsOverrides.set(data.exerciseId, data.sets_reps || "");
+    });
+  }catch(e){ console.error("Kon reps-aanpassingen niet laden", e); }
+}
+
+function rebuildViewExercises(){
   viewExercises = EXERCISES.map(effectiveExercise);
 }
 
@@ -108,7 +131,7 @@ async function saveTagOverride(exId, tags){
   const idx = viewExercises.findIndex(e => e.id === exId);
   if(idx > -1){
     const base = EXERCISES.find(e => e.id === exId);
-    viewExercises[idx] = Object.assign({}, base, tags);
+    viewExercises[idx] = effectiveExercise(base);
   }
 }
 
@@ -119,7 +142,21 @@ async function resetTagOverride(exId){
   }catch(e){ console.error("Kon tag-aanpassing niet verwijderen", e); }
   tagOverrides.delete(exId);
   const idx = viewExercises.findIndex(e => e.id === exId);
-  if(idx > -1){ viewExercises[idx] = EXERCISES.find(e => e.id === exId); }
+  if(idx > -1){
+    const base = EXERCISES.find(e => e.id === exId);
+    viewExercises[idx] = effectiveExercise(base);
+  }
+}
+
+async function saveReps(exId, value){
+  const ref = doc(db, "exerciseReps", `${currentUser.uid}_${exId}`);
+  await setDoc(ref, { uid: currentUser.uid, exerciseId: exId, sets_reps: value });
+  repsOverrides.set(exId, value);
+  const idx = viewExercises.findIndex(e => e.id === exId);
+  if(idx > -1){
+    const base = EXERCISES.find(e => e.id === exId);
+    viewExercises[idx] = effectiveExercise(base);
+  }
 }
 
 // ===== Personal note per exercise (e.g. "laatst gedaan: 3x12") =====
@@ -176,6 +213,10 @@ function fileToCompressedDataURL(file, maxDim=900, quality=0.62){
 
 function activeFilterCount(){
   return state.type.size + state.materiaal.size + state.spiergroep.size + state.bron.size;
+}
+
+function escapeAttr(str){
+  return String(str).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
 function matches(ex){
@@ -311,7 +352,9 @@ async function openDetail(ex){
     <h2 class="sheet-title">${ex.naam}</h2>
     <div class="sheet-meta">
       ${ex.level ? `<span><b>${ex.level}</b></span>` : ""}
-      ${ex.sets_reps && ex.sets_reps !== "-" ? `<span><b>${ex.sets_reps}</b></span>` : ""}
+      <span class="reps-edit-wrap">
+        <input type="text" id="repsInput" class="reps-input" value="${escapeAttr(ex.sets_reps && ex.sets_reps !== "-" ? ex.sets_reps : "")}" placeholder="reps invullen">
+      </span>
     </div>
     <p class="sheet-desc">${ex.beschrijving}</p>
 
@@ -353,6 +396,25 @@ async function openDetail(ex){
   // always be dismissible no matter what goes wrong below.
   sheet.querySelector("#sheetClose").addEventListener("click", closeDetail);
   overlay.addEventListener("click", overlayClickClose);
+
+  // ===== Editable reps/sets badge =====
+  try{
+    const repsInput = sheet.querySelector("#repsInput");
+    let repsTimer = null;
+    repsInput.addEventListener("input", () => {
+      clearTimeout(repsTimer);
+      repsTimer = setTimeout(async () => {
+        try{
+          await saveReps(ex.id, repsInput.value.trim());
+          render();
+        }catch(err){
+          console.error("Kon reps niet opslaan", err);
+        }
+      }, 600);
+    });
+  }catch(err){
+    console.error("Fout bij opbouwen van reps-veld", err);
+  }
 
   // ===== Personal note =====
   try{
@@ -553,7 +615,9 @@ async function bootApp(){
   document.getElementById("userEmail").textContent = currentUser.email;
   await loadPhotoIndex();
   await loadTagOverrides();
+  await loadRepsOverrides();
   await loadNoteIndex();
+  rebuildViewExercises();
   render();
 }
 

@@ -354,6 +354,24 @@ main{padding:14px 18px 40px;}
   margin-bottom:14px;
 }
 .sheet-meta b{color:var(--ink); font-weight:700;}
+.reps-edit-wrap{ display:inline-flex; }
+.reps-input{
+  border:1px solid transparent;
+  background:transparent;
+  color:var(--clay);
+  font-weight:700;
+  font-size:13px;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  padding:3px 6px;
+  border-radius:6px;
+  width:120px;
+}
+.reps-input:focus{
+  outline:none;
+  border-color:var(--line);
+  background:var(--paper);
+}
+.reps-input::placeholder{ color:var(--ink-soft); font-weight:400; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
 .sheet-video{
   width:100%; border-radius:12px; margin-bottom:16px;
   background:#000;
