@@ -28,6 +28,7 @@ let photoIndex = new Set();
 let noteIndex = new Set();
 let tagOverrides = new Map(); // exerciseId -> {type, materiaal, spiergroep}
 let repsOverrides = new Map(); // exerciseId -> sets_reps string
+let weightOverrides = new Map(); // exerciseId -> weight string (kg), only meaningful for Dumbells exercises
 let viewExercises = [];
 
 const MONTH_ORDER = [
@@ -157,6 +158,24 @@ async function saveReps(exId, value){
     const base = EXERCISES.find(e => e.id === exId);
     viewExercises[idx] = effectiveExercise(base);
   }
+}
+
+async function loadWeightOverrides(){
+  weightOverrides = new Map();
+  try{
+    const qy = query(collection(db, "exerciseWeights"), where("uid", "==", currentUser.uid));
+    const snap = await getDocs(qy);
+    snap.forEach(d => {
+      const data = d.data();
+      weightOverrides.set(data.exerciseId, data.weight || "");
+    });
+  }catch(e){ console.error("Kon gewicht-aanpassingen niet laden", e); }
+}
+
+async function saveWeight(exId, value){
+  const ref = doc(db, "exerciseWeights", `${currentUser.uid}_${exId}`);
+  await setDoc(ref, { uid: currentUser.uid, exerciseId: exId, weight: value });
+  weightOverrides.set(exId, value);
 }
 
 // ===== Personal note per exercise (e.g. "laatst gedaan: 3x12") =====
@@ -325,10 +344,16 @@ function renderCard(ex){
   ].join("");
   const hasPhoto = photoIndex.has(String(ex.id));
   const hasNote = noteIndex.has(String(ex.id));
+  const isDumbell = ex.materiaal.includes("Dumbells");
+  const weight = weightOverrides.get(ex.id);
+  const srText = [
+    ex.sets_reps && ex.sets_reps !== "-" ? ex.sets_reps : null,
+    isDumbell && weight ? `${weight}kg` : null
+  ].filter(Boolean).join(" · ");
   card.innerHTML = `
     <div class="card-top">
       <div class="card-name">${ex.naam}</div>
-      ${ex.sets_reps && ex.sets_reps !== "-" ? `<div class="card-sr">${ex.sets_reps}</div>` : ""}
+      ${srText ? `<div class="card-sr">${srText}</div>` : ""}
     </div>
     <div class="card-tags">${tags}${hasPhoto ? '<span class="mini-tag card-video-dot">foto</span>' : ""}${hasNote ? '<span class="mini-tag card-video-dot">notitie</span>' : ""}</div>
   `;
@@ -357,6 +382,17 @@ async function openDetail(ex){
       </span>
     </div>
     <p class="sheet-desc">${ex.beschrijving}</p>
+
+    ${ex.materiaal.includes("Dumbells") ? `
+    <div class="weight-section">
+      <p class="sheet-tags-title">Gewicht (dumbells)</p>
+      <div class="weight-input-wrap">
+        <input type="number" id="weightInput" class="weight-input" min="1" max="12" step="0.5" placeholder="—" value="${escapeAttr(weightOverrides.get(ex.id) || "")}">
+        <span class="weight-unit">kg</span>
+      </div>
+      <p id="weightStatus" style="font-size:12px;color:var(--ink-soft);margin-top:6px;"></p>
+    </div>
+    ` : ""}
 
     <div class="note-section">
       <p class="sheet-tags-title">Eigen notitie</p>
@@ -414,6 +450,41 @@ async function openDetail(ex){
     });
   }catch(err){
     console.error("Fout bij opbouwen van reps-veld", err);
+  }
+
+  // ===== Weight (dumbells only) =====
+  try{
+    const weightInput = sheet.querySelector("#weightInput");
+    if(weightInput){
+      const weightStatus = sheet.querySelector("#weightStatus");
+      let weightTimer = null;
+      weightInput.addEventListener("input", () => {
+        let v = weightInput.value;
+        clearTimeout(weightTimer);
+        weightTimer = setTimeout(async () => {
+          // clamp to the 1–12 kg range, but allow empty (clears the value)
+          if(v !== ""){
+            let num = parseFloat(v.replace(",", "."));
+            if(isNaN(num)) num = "";
+            else num = Math.min(12, Math.max(1, num));
+            v = num === "" ? "" : String(num);
+            weightInput.value = v;
+          }
+          weightStatus.textContent = "Opslaan…";
+          try{
+            await saveWeight(ex.id, v);
+            weightStatus.textContent = "Opgeslagen.";
+            render();
+            setTimeout(() => { if(weightStatus.textContent === "Opgeslagen.") weightStatus.textContent = ""; }, 1200);
+          }catch(err){
+            console.error(err);
+            weightStatus.textContent = "Kon niet opslaan.";
+          }
+        }, 600);
+      });
+    }
+  }catch(err){
+    console.error("Fout bij opbouwen van gewicht-veld", err);
   }
 
   // ===== Personal note =====
@@ -617,6 +688,7 @@ async function bootApp(){
   await loadTagOverrides();
   await loadRepsOverrides();
   await loadNoteIndex();
+  await loadWeightOverrides();
   rebuildViewExercises();
   render();
 }

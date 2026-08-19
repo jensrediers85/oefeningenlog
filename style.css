@@ -387,6 +387,25 @@ main{padding:14px 18px 40px;}
   font-size:15px; background:var(--paper-raised); color:var(--ink);
 }
 .note-input:focus{ outline:none; border-color:var(--petrol); }
+.weight-section{ margin-bottom:18px; }
+.weight-input-wrap{
+  display:flex; align-items:center; gap:8px;
+  border:1px solid var(--line); border-radius:10px;
+  padding:2px 12px;
+  background:var(--paper-raised);
+  width:120px;
+}
+.weight-input{
+  border:none; background:none; padding:8px 0;
+  font-size:15px; color:var(--ink); width:70px;
+  -moz-appearance:textfield;
+}
+.weight-input::-webkit-outer-spin-button, .weight-input::-webkit-inner-spin-button{
+  -webkit-appearance:none; margin:0;
+}
+.weight-input:focus{ outline:none; }
+.weight-unit{ font-size:13px; color:var(--ink-soft); font-weight:600; }
+.weight-input-wrap:focus-within{ border-color:var(--petrol); }
 .sheet-tags-title{font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-soft); font-weight:700; margin:16px 0 8px;}
 .sheet-tags{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:6px;}
 
