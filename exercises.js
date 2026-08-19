@@ -8,7 +8,7 @@ const EXERCISES = [
   "sets_reps": "-",
   "beschrijving": "Eén been achter ander en zo ver mogelijk opzij. Bij terugkomen enkel aantikken (op blauw kussen).",
   "materiaal": [
-   "Balanskussen"
+   "Airex kussen"
   ],
   "spiergroep": [
    "Stabiliteit/evenwicht"

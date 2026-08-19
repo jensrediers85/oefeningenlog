@@ -39,7 +39,7 @@ const monthIndex = m => MONTH_ORDER.indexOf(m);
 
 const TYPE_ORDER = ["Kracht","Stabiliteit","Explosief","Stretch"];
 const MATERIAAL_ORDER = ["Geen (bodyweight)","Dumbells","Rekker/elastiek","Swiss ball","Plyobox","Step",
-  "Medicine ball","Fitnessbank","Aquabag","Airex kussen","Halterschijf","Gewichtje","Balanskussen","Tafel/bank","Trap"];
+  "Medicine ball","Fitnessbank","Aquabag","Airex kussen","Halterschijf","Gewichtje","Tafel/bank","Trap"];
 const SPIER_ORDER = ["Quadriceps","Hamstrings","Glutei","Adductoren","Abductoren","Kuiten","Core","Buikspieren",
   "Rug","Schouders","Borst","Biceps","Triceps","Heupflexoren","Heupen","Stabiliteit/evenwicht"];
 const BRON_ORDER = ["Kine (Febe)","Podokin (Lebbeke)"];
