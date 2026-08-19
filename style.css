@@ -418,6 +418,19 @@ main{padding:14px 18px 40px;}
 .sheet-tags{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:6px;}
 
 .photo-section{margin-top:20px; border-top:1px solid var(--line); padding-top:16px;}
+.danger-section{margin-top:24px; border-top:1px solid var(--line); padding-top:16px;}
+.delete-exercise-btn{
+  width:100%;
+  background:none;
+  border:1px solid var(--clay);
+  color:var(--clay);
+  padding:12px;
+  border-radius:10px;
+  font-size:14px;
+  font-weight:700;
+  cursor:pointer;
+}
+.delete-exercise-btn:active{ background:var(--clay-soft); }
 .photo-grid{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px;}
 .photo-thumb{position:relative; width:84px; height:84px; border-radius:10px; overflow:hidden; border:1px solid var(--line);}
 .photo-thumb img{width:100%; height:100%; object-fit:cover; display:block;}

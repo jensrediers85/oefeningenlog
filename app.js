@@ -29,6 +29,7 @@ let noteIndex = new Set();
 let tagOverrides = new Map(); // exerciseId -> {type, materiaal, spiergroep}
 let repsOverrides = new Map(); // exerciseId -> sets_reps string
 let weightOverrides = new Map(); // exerciseId -> weight string (kg), only meaningful for Dumbells exercises
+let deletedSet = new Set(); // exerciseIds (as strings) the user has hidden
 let viewExercises = [];
 
 const MONTH_ORDER = [
@@ -122,7 +123,26 @@ async function loadRepsOverrides(){
 }
 
 function rebuildViewExercises(){
-  viewExercises = EXERCISES.map(effectiveExercise);
+  viewExercises = EXERCISES.filter(e => !deletedSet.has(String(e.id))).map(effectiveExercise);
+}
+
+async function loadDeletedSet(){
+  deletedSet = new Set();
+  try{
+    const qy = query(collection(db, "exerciseDeleted"), where("uid", "==", currentUser.uid));
+    const snap = await getDocs(qy);
+    snap.forEach(d => {
+      const data = d.data();
+      deletedSet.add(String(data.exerciseId));
+    });
+  }catch(e){ console.error("Kon verborgen oefeningen niet laden", e); }
+}
+
+async function deleteExercise(exId){
+  const ref = doc(db, "exerciseDeleted", `${currentUser.uid}_${exId}`);
+  await setDoc(ref, { uid: currentUser.uid, exerciseId: exId, deleted: true });
+  deletedSet.add(String(exId));
+  rebuildViewExercises();
 }
 
 async function saveTagOverride(exId, tags){
@@ -428,12 +448,34 @@ async function openDetail(ex){
       <input type="file" id="photoInput" accept="image/*" multiple hidden>
       <p id="photoStatus" style="font-size:12px;color:var(--ink-soft);margin-top:8px;"></p>
     </div>
+
+    <div class="danger-section">
+      <button class="delete-exercise-btn" id="deleteExerciseBtn">Oefening verwijderen</button>
+      <p style="font-size:12px;color:var(--ink-soft);margin-top:6px;">Verbergt deze oefening enkel voor jou, bv. bij dubbels. De rest van je data blijft ongemoeid.</p>
+    </div>
   `;
 
   // Wire up closing FIRST, before anything that could fail — the sheet must
   // always be dismissible no matter what goes wrong below.
   sheet.querySelector("#sheetClose").addEventListener("click", closeDetail);
   overlay.addEventListener("click", overlayClickClose);
+
+  try{
+    sheet.querySelector("#deleteExerciseBtn").addEventListener("click", async () => {
+      const ok = confirm(`"${ex.naam}" verwijderen uit je lijst? Dit kan niet ongedaan worden gemaakt.`);
+      if(!ok) return;
+      try{
+        await deleteExercise(ex.id);
+        closeDetail();
+        render();
+      }catch(err){
+        console.error("Kon oefening niet verwijderen", err);
+        alert("Er ging iets mis bij het verwijderen. Probeer opnieuw.");
+      }
+    });
+  }catch(err){
+    console.error("Fout bij opbouwen van verwijderknop", err);
+  }
 
   // ===== Editable reps/sets badge =====
   try{
@@ -718,6 +760,7 @@ async function bootApp(){
   await loadRepsOverrides();
   await loadNoteIndex();
   await loadWeightOverrides();
+  await loadDeletedSet();
   rebuildViewExercises();
   render();
 }
