@@ -553,6 +553,8 @@ async function openDetail(ex){
       t.innerHTML = `<img src="${src}"><button aria-label="Verwijder foto">×</button>`;
       t.querySelector("button").addEventListener("click", async (e) => {
         e.stopPropagation();
+        const ok = confirm("Deze foto verwijderen? Dit kan niet ongedaan worden gemaakt.");
+        if(!ok) return;
         statusEl.textContent = "Verwijderen…";
         const all = await getPhotos(ex.id);
         const updated = all.filter((_,idx)=>idx!==i);
