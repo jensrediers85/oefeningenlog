@@ -310,8 +310,15 @@ async function openDetail(ex){
     </div>
   `;
 
+  // Wire up closing FIRST, before anything that could fail — the sheet must
+  // always be dismissible no matter what goes wrong below.
+  sheet.querySelector("#sheetClose").addEventListener("click", closeDetail);
+  overlay.addEventListener("click", overlayClickClose);
+
   const grid = sheet.querySelector("#photoGrid");
   const statusEl = sheet.querySelector("#photoStatus");
+
+  try{
 
   function renderPhotos(list){
     grid.innerHTML = "";
@@ -362,9 +369,6 @@ async function openDetail(ex){
       statusEl.textContent = "Er ging iets mis bij het opslaan.";
     }
   });
-
-  sheet.querySelector("#sheetClose").addEventListener("click", closeDetail);
-  overlay.addEventListener("click", overlayClickClose);
 
   // ===== Tag editor =====
   let workingTags = { type: [...ex.type], materiaal: [...ex.materiaal], spiergroep: [...ex.spiergroep] };
@@ -435,6 +439,9 @@ async function openDetail(ex){
       tagEditStatus.textContent = "Kon niet herstellen — probeer opnieuw.";
     }
   });
+  }catch(err){
+    console.error("Fout bij opbouwen van foto's/tags-sectie", err);
+  }
 }
 function overlayClickClose(e){ if(e.target.id === "overlay") closeDetail(); }
 function closeDetail(){
