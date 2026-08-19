@@ -8,24 +8,15 @@
 </head>
 <body>
 
-<!-- ===== Auth screen ===== -->
+<!-- ===== Loading / connect status ===== -->
 <div class="auth-screen" id="authScreen">
   <div class="auth-card">
     <div class="auth-brand">
       <span class="brand-mark">＋</span>
       <h1>Oefeningenlog</h1>
     </div>
-    <p class="auth-sub">Log in of maak een account om je oefeningen en foto's overal te gebruiken.</p>
-    <form id="authForm" autocomplete="on">
-      <label class="auth-label" for="authEmail">E-mailadres</label>
-      <input class="auth-input" id="authEmail" type="email" autocomplete="username" placeholder="jij@voorbeeld.be" required>
-      <label class="auth-label" for="authPassword">Wachtwoord</label>
-      <input class="auth-input" id="authPassword" type="password" autocomplete="current-password" placeholder="Minstens 6 tekens" required>
-      <p class="auth-error" id="authError"></p>
-      <button class="btn-primary" id="authSubmitLogin" type="submit">Inloggen</button>
-      <button class="btn-ghost auth-signup-btn" id="authSubmitSignup" type="button">Nieuw account aanmaken</button>
-    </form>
-    <p class="auth-hint">Nieuw hier? Vul een e-mailadres en zelfgekozen wachtwoord in en tik op "Nieuw account aanmaken". Gebruik daarna dezelfde gegevens om op je andere toestel in te loggen.</p>
+    <p class="auth-sub" id="authStatus">Verbinden…</p>
+    <p class="auth-error" id="authError"></p>
   </div>
 </div>
 

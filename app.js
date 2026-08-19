@@ -470,7 +470,9 @@ function wireControls(){
     state.type.clear(); state.materiaal.clear(); state.spiergroep.clear(); state.bron.clear();
     render();
   });
-  document.getElementById("logoutBtn").addEventListener("click", () => signOut(auth));
+  document.getElementById("logoutBtn").addEventListener("click", () => {
+    signOut(auth).then(() => location.reload());
+  });
 }
 
 let wired = false;
@@ -484,54 +486,30 @@ async function bootApp(){
 
 const authScreen = document.getElementById("authScreen");
 const appRoot = document.getElementById("appRoot");
-const authEmail = document.getElementById("authEmail");
-const authPassword = document.getElementById("authPassword");
+const authStatus = document.getElementById("authStatus");
 const authError = document.getElementById("authError");
-const authSubmitLogin = document.getElementById("authSubmitLogin");
-const authSubmitSignup = document.getElementById("authSubmitSignup");
 
-function setAuthBusy(busy){
-  authSubmitLogin.disabled = busy;
-  authSubmitSignup.disabled = busy;
-}
+// Fixed account — no login screen shown to the user, app connects automatically.
+const FIXED_EMAIL = "jens.rediers@telenet.be";
+const FIXED_PASSWORD = "PauliFloriEgel85";
 
 function friendlyAuthError(err){
   const code = err.code || "";
   if(code.includes("wrong-password") || code.includes("invalid-credential")) return "Fout e-mailadres of wachtwoord.";
-  if(code.includes("user-not-found")) return "Geen account gevonden met dit e-mailadres — registreer eerst.";
-  if(code.includes("email-already-in-use")) return "Er bestaat al een account met dit e-mailadres — log in.";
+  if(code.includes("user-not-found")) return "Geen account gevonden met dit e-mailadres.";
   if(code.includes("invalid-email")) return "Ongeldig e-mailadres.";
-  if(code.includes("weak-password")) return "Wachtwoord is te zwak (minstens 6 tekens).";
+  if(code.includes("network-request-failed")) return "Geen internetverbinding — probeer opnieuw.";
   return "Er ging iets mis: " + code;
 }
 
-authSubmitLogin.addEventListener("click", async (e) => {
-  e.preventDefault();
-  authError.textContent = "";
-  setAuthBusy(true);
+async function autoLogin(){
   try{
-    await signInWithEmailAndPassword(auth, authEmail.value.trim(), authPassword.value);
+    await signInWithEmailAndPassword(auth, FIXED_EMAIL, FIXED_PASSWORD);
   }catch(err){
+    authStatus.textContent = "Kon niet automatisch verbinden.";
     authError.textContent = friendlyAuthError(err);
   }
-  setAuthBusy(false);
-});
-
-authSubmitSignup.addEventListener("click", async (e) => {
-  e.preventDefault();
-  authError.textContent = "";
-  if(authPassword.value.length < 6){
-    authError.textContent = "Wachtwoord moet minstens 6 tekens hebben.";
-    return;
-  }
-  setAuthBusy(true);
-  try{
-    await createUserWithEmailAndPassword(auth, authEmail.value.trim(), authPassword.value);
-  }catch(err){
-    authError.textContent = friendlyAuthError(err);
-  }
-  setAuthBusy(false);
-});
+}
 
 onAuthStateChanged(auth, (user) => {
   if(user){
@@ -543,5 +521,6 @@ onAuthStateChanged(auth, (user) => {
     currentUser = null;
     authScreen.hidden = false;
     appRoot.hidden = true;
+    autoLogin();
   }
 });

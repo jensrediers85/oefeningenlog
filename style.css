@@ -38,6 +38,7 @@ body{
   padding:24px;
   background:var(--petrol);
 }
+.auth-screen[hidden]{ display:none; }
 .auth-card{
   background:var(--paper-raised);
   border-radius:20px;
