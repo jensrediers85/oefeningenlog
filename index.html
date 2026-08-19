@@ -4,19 +4,26 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Oefeningenlog</title>
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=4">
 </head>
 <body>
 
-<!-- ===== Loading / connect status ===== -->
+<!-- ===== Auth screen (auto-filled, auto-submits) ===== -->
 <div class="auth-screen" id="authScreen">
   <div class="auth-card">
     <div class="auth-brand">
       <span class="brand-mark">＋</span>
       <h1>Oefeningenlog</h1>
     </div>
-    <p class="auth-sub" id="authStatus">Verbinden…</p>
-    <p class="auth-error" id="authError"></p>
+    <p class="auth-sub">Automatisch aanmelden…</p>
+    <form id="authForm" autocomplete="on">
+      <label class="auth-label" for="authEmail">E-mailadres</label>
+      <input class="auth-input" id="authEmail" type="email" autocomplete="username" value="jens.rediers@telenet.be" required>
+      <label class="auth-label" for="authPassword">Wachtwoord</label>
+      <input class="auth-input" id="authPassword" type="password" autocomplete="current-password" value="PauliFloriEgel85" required>
+      <p class="auth-error" id="authError"></p>
+      <button class="btn-primary" id="authSubmitLogin" type="submit">Inloggen</button>
+    </form>
   </div>
 </div>
 
@@ -83,7 +90,7 @@
 </div>
 </div>
 
-<script src="exercises.js"></script>
-<script type="module" src="app.js"></script>
+<script src="exercises.js?v=4"></script>
+<script type="module" src="app.js?v=4"></script>
 </body>
 </html>

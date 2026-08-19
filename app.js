@@ -486,12 +486,10 @@ async function bootApp(){
 
 const authScreen = document.getElementById("authScreen");
 const appRoot = document.getElementById("appRoot");
-const authStatus = document.getElementById("authStatus");
+const authForm = document.getElementById("authForm");
+const authEmail = document.getElementById("authEmail");
+const authPassword = document.getElementById("authPassword");
 const authError = document.getElementById("authError");
-
-// Fixed account — no login screen shown to the user, app connects automatically.
-const FIXED_EMAIL = "jens.rediers@telenet.be";
-const FIXED_PASSWORD = "PauliFloriEgel85";
 
 function friendlyAuthError(err){
   const code = err.code || "";
@@ -502,14 +500,19 @@ function friendlyAuthError(err){
   return "Er ging iets mis: " + code;
 }
 
-async function autoLogin(){
+async function doLogin(){
+  authError.textContent = "";
   try{
-    await signInWithEmailAndPassword(auth, FIXED_EMAIL, FIXED_PASSWORD);
+    await signInWithEmailAndPassword(auth, authEmail.value.trim(), authPassword.value);
   }catch(err){
-    authStatus.textContent = "Kon niet automatisch verbinden.";
     authError.textContent = friendlyAuthError(err);
   }
 }
+
+authForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  doLogin();
+});
 
 onAuthStateChanged(auth, (user) => {
   if(user){
@@ -521,6 +524,6 @@ onAuthStateChanged(auth, (user) => {
     currentUser = null;
     authScreen.hidden = false;
     appRoot.hidden = true;
-    autoLogin();
+    doLogin(); // fields are pre-filled, so this logs in without the person having to tap anything
   }
 });
