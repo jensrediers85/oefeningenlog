@@ -387,8 +387,10 @@ async function openDetail(ex){
     <div class="weight-section">
       <p class="sheet-tags-title">Gewicht (dumbells)</p>
       <div class="weight-input-wrap">
+        <button type="button" id="weightMinus" class="weight-step-btn">−</button>
         <input type="number" id="weightInput" class="weight-input" min="1" max="12" step="0.5" placeholder="—" value="${escapeAttr(weightOverrides.get(ex.id) || "")}">
         <span class="weight-unit">kg</span>
+        <button type="button" id="weightPlus" class="weight-step-btn">＋</button>
       </div>
       <p id="weightStatus" style="font-size:12px;color:var(--ink-soft);margin-top:6px;"></p>
     </div>
@@ -457,11 +459,27 @@ async function openDetail(ex){
     const weightInput = sheet.querySelector("#weightInput");
     if(weightInput){
       const weightStatus = sheet.querySelector("#weightStatus");
+      const weightMinus = sheet.querySelector("#weightMinus");
+      const weightPlus = sheet.querySelector("#weightPlus");
       let weightTimer = null;
+
+      async function commitWeight(v){
+        weightStatus.textContent = "Opslaan…";
+        try{
+          await saveWeight(ex.id, v);
+          weightStatus.textContent = "Opgeslagen.";
+          render();
+          setTimeout(() => { if(weightStatus.textContent === "Opgeslagen.") weightStatus.textContent = ""; }, 1200);
+        }catch(err){
+          console.error(err);
+          weightStatus.textContent = "Kon niet opslaan.";
+        }
+      }
+
       weightInput.addEventListener("input", () => {
         let v = weightInput.value;
         clearTimeout(weightTimer);
-        weightTimer = setTimeout(async () => {
+        weightTimer = setTimeout(() => {
           // clamp to the 1–12 kg range, but allow empty (clears the value)
           if(v !== ""){
             let num = parseFloat(v.replace(",", "."));
@@ -470,17 +488,26 @@ async function openDetail(ex){
             v = num === "" ? "" : String(num);
             weightInput.value = v;
           }
-          weightStatus.textContent = "Opslaan…";
-          try{
-            await saveWeight(ex.id, v);
-            weightStatus.textContent = "Opgeslagen.";
-            render();
-            setTimeout(() => { if(weightStatus.textContent === "Opgeslagen.") weightStatus.textContent = ""; }, 1200);
-          }catch(err){
-            console.error(err);
-            weightStatus.textContent = "Kon niet opslaan.";
-          }
+          commitWeight(v);
         }, 600);
+      });
+
+      // Steps: whole kg up to and including 10, half kg above 10.
+      weightPlus.addEventListener("click", () => {
+        clearTimeout(weightTimer);
+        const current = parseFloat(weightInput.value) || 0;
+        const step = current < 10 ? 1 : 0.5;
+        const next = Math.min(12, Math.round((current + step) * 2) / 2);
+        weightInput.value = String(next);
+        commitWeight(String(next));
+      });
+      weightMinus.addEventListener("click", () => {
+        clearTimeout(weightTimer);
+        const current = parseFloat(weightInput.value) || 1;
+        const step = current <= 10 ? 1 : 0.5;
+        const next = Math.max(1, Math.round((current - step) * 2) / 2);
+        weightInput.value = String(next);
+        commitWeight(String(next));
       });
     }
   }catch(err){
