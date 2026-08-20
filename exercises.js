@@ -2119,7 +2119,8 @@ const EXERCISES = [
    "Stabiliteit/evenwicht"
   ],
   "type": [
-   "Kracht"
+   "Kracht",
+   "Stabiliteit"
   ],
   "video": null
  },
@@ -2481,7 +2482,8 @@ const EXERCISES = [
    "Stabiliteit/evenwicht"
   ],
   "type": [
-   "Kracht"
+   "Kracht",
+   "Stabiliteit"
   ],
   "video": null
  },
@@ -2524,7 +2526,8 @@ const EXERCISES = [
    "Stabiliteit/evenwicht"
   ],
   "type": [
-   "Kracht"
+   "Kracht",
+   "Stabiliteit"
   ],
   "video": null
  },
@@ -2815,7 +2818,8 @@ const EXERCISES = [
    "Stabiliteit/evenwicht"
   ],
   "type": [
-   "Kracht"
+   "Kracht",
+   "Stabiliteit"
   ],
   "video": null
  },
@@ -3057,7 +3061,8 @@ const EXERCISES = [
    "Stabiliteit/evenwicht"
   ],
   "type": [
-   "Kracht"
+   "Kracht",
+   "Stabiliteit"
   ],
   "video": null
  },
@@ -3100,7 +3105,8 @@ const EXERCISES = [
    "Abductoren"
   ],
   "type": [
-   "Kracht"
+   "Kracht",
+   "Stabiliteit"
   ],
   "video": null
  },
@@ -3180,7 +3186,8 @@ const EXERCISES = [
    "Stabiliteit/evenwicht"
   ],
   "type": [
-   "Kracht"
+   "Kracht",
+   "Stabiliteit"
   ],
   "video": null
  },
@@ -3282,6 +3289,7 @@ const EXERCISES = [
    "Stabiliteit/evenwicht"
   ],
   "type": [
+   "Stabiliteit",
    "Explosief"
   ],
   "video": null
@@ -3302,7 +3310,8 @@ const EXERCISES = [
    "Quadriceps"
   ],
   "type": [
-   "Kracht"
+   "Kracht",
+   "Stabiliteit"
   ],
   "video": null
  },
@@ -3444,7 +3453,8 @@ const EXERCISES = [
    "Quadriceps"
   ],
   "type": [
-   "Kracht"
+   "Kracht",
+   "Stabiliteit"
   ],
   "video": null
  },
@@ -3466,7 +3476,8 @@ const EXERCISES = [
    "Quadriceps"
   ],
   "type": [
-   "Kracht"
+   "Kracht",
+   "Stabiliteit"
   ],
   "video": null
  },
@@ -3627,7 +3638,8 @@ const EXERCISES = [
    "Stabiliteit/evenwicht"
   ],
   "type": [
-   "Kracht"
+   "Kracht",
+   "Stabiliteit"
   ],
   "video": null
  },
@@ -3727,7 +3739,8 @@ const EXERCISES = [
    "Heupflexoren"
   ],
   "type": [
-   "Kracht"
+   "Kracht",
+   "Stabiliteit"
   ],
   "video": null
  },
@@ -3791,7 +3804,8 @@ const EXERCISES = [
    "Stabiliteit/evenwicht"
   ],
   "type": [
-   "Kracht"
+   "Kracht",
+   "Stabiliteit"
   ],
   "video": null
  },
@@ -3831,7 +3845,8 @@ const EXERCISES = [
    "Stabiliteit/evenwicht"
   ],
   "type": [
-   "Kracht"
+   "Kracht",
+   "Stabiliteit"
   ],
   "video": null
  },
@@ -3872,7 +3887,8 @@ const EXERCISES = [
    "Stabiliteit/evenwicht"
   ],
   "type": [
-   "Kracht"
+   "Kracht",
+   "Stabiliteit"
   ],
   "video": null
  },
@@ -3915,7 +3931,8 @@ const EXERCISES = [
    "Abductoren"
   ],
   "type": [
-   "Kracht"
+   "Kracht",
+   "Stabiliteit"
   ],
   "video": null
  },
@@ -4014,7 +4031,8 @@ const EXERCISES = [
    "Quadriceps"
   ],
   "type": [
-   "Kracht"
+   "Kracht",
+   "Stabiliteit"
   ],
   "video": null
  },
@@ -4115,6 +4133,7 @@ const EXERCISES = [
    "Kuiten"
   ],
   "type": [
+   "Stabiliteit",
    "Explosief"
   ],
   "video": null
@@ -4137,7 +4156,8 @@ const EXERCISES = [
    "Stabiliteit/evenwicht"
   ],
   "type": [
-   "Kracht"
+   "Kracht",
+   "Stabiliteit"
   ],
   "video": null
  },
@@ -4180,7 +4200,8 @@ const EXERCISES = [
    "Stabiliteit/evenwicht"
   ],
   "type": [
-   "Kracht"
+   "Kracht",
+   "Stabiliteit"
   ],
   "video": null
  },
@@ -4223,7 +4244,8 @@ const EXERCISES = [
    "Schouders"
   ],
   "type": [
-   "Kracht"
+   "Kracht",
+   "Stabiliteit"
   ],
   "video": null
  },
@@ -4382,7 +4404,8 @@ const EXERCISES = [
    "Abductoren"
   ],
   "type": [
-   "Kracht"
+   "Kracht",
+   "Stabiliteit"
   ],
   "video": null
  },
@@ -4483,7 +4506,8 @@ const EXERCISES = [
    "Quadriceps"
   ],
   "type": [
-   "Kracht"
+   "Kracht",
+   "Stabiliteit"
   ],
   "video": null
  },
@@ -4523,7 +4547,8 @@ const EXERCISES = [
    "Stabiliteit/evenwicht"
   ],
   "type": [
-   "Kracht"
+   "Kracht",
+   "Stabiliteit"
   ],
   "video": null
  },
@@ -4589,7 +4614,8 @@ const EXERCISES = [
    "Stabiliteit/evenwicht"
   ],
   "type": [
-   "Kracht"
+   "Kracht",
+   "Stabiliteit"
   ],
   "video": null
  },
