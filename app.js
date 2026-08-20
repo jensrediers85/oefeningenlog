@@ -47,9 +47,7 @@ const MATERIAAL_ORDER = ["Geen (bodyweight)","Dumbells","Rekker/elastiek","Swiss
   "Medicine ball","Fitnessbank","Aquabag","Airex kussen","Halterschijf","Gewichtje","Tafel/bank","Trap"];
 const SPIER_ORDER = ["Quadriceps","Hamstrings","Glutei","Adductoren","Abductoren","Kuiten","Core","Buikspieren",
   "Rug","Schouders","Borst","Biceps","Triceps","Heupflexoren","Heupen","Stabiliteit/evenwicht"];
-const BRON_ORDER = ["Kine (Febe)","Podokin (Lebbeke)"];
-
-const state = { q: "", type: new Set(), materiaal: new Set(), spiergroep: new Set(), bron: new Set() };
+const state = { q: "", type: new Set(), materiaal: new Set(), spiergroep: new Set() };
 
 function photoDocId(exId){ return `${currentUser.uid}_${exId}`; }
 
@@ -278,7 +276,7 @@ function fileToCompressedDataURL(file, maxDim=900, quality=0.62){
 }
 
 function activeFilterCount(){
-  return state.type.size + state.materiaal.size + state.spiergroep.size + state.bron.size;
+  return state.type.size + state.materiaal.size + state.spiergroep.size;
 }
 
 function escapeAttr(str){
@@ -289,9 +287,8 @@ function matches(ex){
   if(state.type.size && ![...state.type].every(t => ex.type.includes(t))) return false;
   if(state.materiaal.size && ![...state.materiaal].every(t => ex.materiaal.includes(t))) return false;
   if(state.spiergroep.size && ![...state.spiergroep].every(t => ex.spiergroep.includes(t))) return false;
-  if(state.bron.size && !state.bron.has(ex.bron)) return false;
   if(state.q){
-    const hay = [ex.naam, ex.beschrijving, ex.maand, ...ex.materiaal, ...ex.spiergroep, ...ex.type, ex.bron]
+    const hay = [ex.naam, ex.beschrijving, ex.maand, ...ex.materiaal, ...ex.spiergroep, ...ex.type]
       .join(" ").toLowerCase();
     if(!hay.includes(state.q.toLowerCase())) return false;
   }
@@ -319,7 +316,6 @@ function buildChips(){
   build(TYPE_ORDER, "chips-type", "type");
   build(MATERIAAL_ORDER, "chips-materiaal", "materiaal");
   build(SPIER_ORDER, "chips-spiergroep", "spiergroep");
-  build(BRON_ORDER, "chips-bron", "bron");
 }
 
 function syncChipVisuals(){
@@ -336,7 +332,6 @@ function renderActiveChips(){
   state.type.forEach(v => all.push(["type", v]));
   state.materiaal.forEach(v => all.push(["materiaal", v]));
   state.spiergroep.forEach(v => all.push(["spiergroep", v]));
-  state.bron.forEach(v => all.push(["bron", v]));
   all.forEach(([cat, val]) => {
     const chip = document.createElement("span");
     chip.className = "active-chip";
@@ -420,10 +415,9 @@ async function openDetail(ex){
   sheet.innerHTML = `
     <div class="sheet-handle"></div>
     <button class="sheet-close" id="sheetClose">×</button>
-    <p class="sheet-eyebrow">${ex.maand} · ${ex.bron}</p>
+    <p class="sheet-eyebrow">${ex.maand}</p>
     <h2 class="sheet-title">${ex.naam}</h2>
     <div class="sheet-meta">
-      ${ex.level ? `<span><b>${ex.level}</b></span>` : ""}
       <span class="reps-edit-wrap">
         <input type="text" id="repsInput" class="reps-input" value="${escapeAttr(ex.sets_reps && ex.sets_reps !== "-" ? ex.sets_reps : "")}" placeholder="reps invullen">
       </span>
@@ -831,12 +825,12 @@ function wireControls(){
     filterToggle.setAttribute("aria-expanded","false");
   });
   document.getElementById("clearFilters").addEventListener("click", () => {
-    state.type.clear(); state.materiaal.clear(); state.spiergroep.clear(); state.bron.clear();
+    state.type.clear(); state.materiaal.clear(); state.spiergroep.clear();
     render();
   });
   document.getElementById("emptyReset").addEventListener("click", () => {
     state.q = ""; document.getElementById("search").value = "";
-    state.type.clear(); state.materiaal.clear(); state.spiergroep.clear(); state.bron.clear();
+    state.type.clear(); state.materiaal.clear(); state.spiergroep.clear();
     render();
   });
   document.getElementById("logoutBtn").addEventListener("click", () => {
