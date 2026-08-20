@@ -379,7 +379,7 @@ function renderResults(){
   main.innerHTML = "";
 
   const filtered = viewExercises.filter(matches);
-  document.getElementById("subcount").textContent = `${EXERCISES.length} oefeningen · ${filtered.length} getoond`;
+  document.getElementById("subcount").textContent = `${EXERCISES.length} oefeningen · ${filtered.length} getoond · verborgen:${hiddenSet.size} verwijderd:${deletedSet.size}`;
 
   if(filtered.length === 0){
     empty.hidden = false;
