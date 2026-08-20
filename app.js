@@ -26,6 +26,7 @@ setPersistence(auth, browserLocalPersistence).catch(()=>{});
 let currentUser = null;
 let photoIndex = new Set();
 let noteIndex = new Set();
+let descOverrides = new Map(); // exerciseId -> custom beschrijving text
 let tagOverrides = new Map(); // exerciseId -> {type, materiaal, spiergroep}
 let repsOverrides = new Map(); // exerciseId -> sets_reps string
 let weightOverrides = new Map(); // exerciseId -> weight string (kg), only meaningful for Dumbells exercises
@@ -83,6 +84,7 @@ async function loadPhotoIndex(){
 function effectiveExercise(ex){
   const o = tagOverrides.get(ex.id);
   const r = repsOverrides.get(ex.id);
+  const d = descOverrides.get(ex.id);
   let merged = ex;
   if(o){
     merged = Object.assign({}, merged, {
@@ -93,6 +95,9 @@ function effectiveExercise(ex){
   }
   if(r !== undefined){
     merged = Object.assign({}, merged, { sets_reps: r });
+  }
+  if(d !== undefined){
+    merged = Object.assign({}, merged, { beschrijving: d });
   }
   return merged;
 }
@@ -198,6 +203,29 @@ async function saveReps(exId, value){
   const ref = doc(db, "exerciseReps", `${currentUser.uid}_${exId}`);
   await setDoc(ref, { uid: currentUser.uid, exerciseId: exId, sets_reps: value });
   repsOverrides.set(exId, value);
+  const idx = viewExercises.findIndex(e => e.id === exId);
+  if(idx > -1){
+    const base = EXERCISES.find(e => e.id === exId);
+    viewExercises[idx] = effectiveExercise(base);
+  }
+}
+
+async function loadDescOverrides(){
+  descOverrides = new Map();
+  try{
+    const qy = query(collection(db, "exerciseDescriptions"), where("uid", "==", currentUser.uid));
+    const snap = await getDocs(qy);
+    snap.forEach(d => {
+      const data = d.data();
+      descOverrides.set(data.exerciseId, data.beschrijving || "");
+    });
+  }catch(e){ console.error("Kon omschrijving-aanpassingen niet laden", e); }
+}
+
+async function saveDescription(exId, value){
+  const ref = doc(db, "exerciseDescriptions", `${currentUser.uid}_${exId}`);
+  await setDoc(ref, { uid: currentUser.uid, exerciseId: exId, beschrijving: value });
+  descOverrides.set(exId, value);
   const idx = viewExercises.findIndex(e => e.id === exId);
   if(idx > -1){
     const base = EXERCISES.find(e => e.id === exId);
@@ -422,7 +450,10 @@ async function openDetail(ex){
         <input type="text" id="repsInput" class="reps-input" value="${escapeAttr(ex.sets_reps && ex.sets_reps !== "-" ? ex.sets_reps : "")}" placeholder="reps invullen">
       </span>
     </div>
-    <p class="sheet-desc">${ex.beschrijving}</p>
+    <div class="desc-section">
+      <textarea id="descInput" class="desc-input" rows="4">${escapeAttr(ex.beschrijving)}</textarea>
+      <p id="descStatus" style="font-size:12px;color:var(--ink-soft);margin-top:6px;"></p>
+    </div>
 
     ${ex.materiaal.includes("Dumbells") ? `
     <div class="weight-section">
@@ -510,6 +541,31 @@ async function openDetail(ex){
     });
   }catch(err){
     console.error("Fout bij opbouwen van verberg/verwijder-knoppen", err);
+  }
+
+  // ===== Editable description =====
+  try{
+    const descInput = sheet.querySelector("#descInput");
+    const descStatus = sheet.querySelector("#descStatus");
+    let descTimer = null;
+    descInput.addEventListener("input", () => {
+      descStatus.textContent = "Typen…";
+      clearTimeout(descTimer);
+      descTimer = setTimeout(async () => {
+        descStatus.textContent = "Opslaan…";
+        try{
+          await saveDescription(ex.id, descInput.value);
+          descStatus.textContent = "Opgeslagen.";
+          render();
+          setTimeout(() => { if(descStatus.textContent === "Opgeslagen.") descStatus.textContent = ""; }, 1200);
+        }catch(err){
+          console.error(err);
+          descStatus.textContent = "Kon niet opslaan.";
+        }
+      }, 600);
+    });
+  }catch(err){
+    console.error("Fout bij opbouwen van omschrijving-veld", err);
   }
 
   // ===== Editable reps/sets badge =====
@@ -846,6 +902,7 @@ async function bootApp(){
   await loadPhotoIndex();
   await loadTagOverrides();
   await loadRepsOverrides();
+  await loadDescOverrides();
   await loadNoteIndex();
   await loadWeightOverrides();
   await loadDeletedSet();
