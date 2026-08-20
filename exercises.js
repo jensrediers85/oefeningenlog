@@ -3089,157 +3089,13 @@ const EXERCISES = [
   "video": null
  },
  {
-  "id": 156,
-  "naam": "Wandelen met Rekker rond Voorvoet",
-  "maand": "Juli 2025",
-  "bron": "Kine (Febe)",
-  "level": null,
-  "sets_reps": "3 lengtes heen en terug",
-  "beschrijving": "1. Start vanuit stand met een rekker rond je voorvoeten 2. Ga op je tippen staan en wandel zigzaggend naar de andere kant van de ruimte 3. Let op als je je been bijtrekt, dat je dit traag en gecontroleerd doet Focus: Kuiten, evenwicht, abductoren",
-  "materiaal": [
-   "Rekker/elastiek"
-  ],
-  "spiergroep": [
-   "Kuiten",
-   "Stabiliteit/evenwicht",
-   "Abductoren"
-  ],
-  "type": [
-   "Kracht",
-   "Stabiliteit"
-  ],
-  "video": null
- },
- {
-  "id": 157,
-  "naam": "Eenbenige Wall Sit",
-  "maand": "Juli 2025",
-  "bron": "Kine (Febe)",
-  "level": null,
-  "sets_reps": "5x20\"",
-  "beschrijving": "1. Ga tegen de muur zitten met je knieën 90° gebogen 2. Strek 1 been uit, waardoor je enkel op het andere been steunt 3. Hou 20\" aan en wissel van kant Focus: quadriceps",
-  "materiaal": [
-   "Geen (bodyweight)"
-  ],
-  "spiergroep": [
-   "Quadriceps"
-  ],
-  "type": [
-   "Kracht"
-  ],
-  "video": null
- },
- {
-  "id": 158,
-  "naam": "Plank met Gewichtje",
-  "maand": "Juli 2025",
-  "bron": "Kine (Febe)",
-  "level": null,
-  "sets_reps": "2x10",
-  "beschrijving": "1. Start vanuit pomphouding met een gewichtje aan je linkerhand 2. Breng het gewichtje met je linkerhand zo ver mogelijk naar rechts 3. Draai daarna de omgekeerde richting uit, naar een side plank gesteund op je rechterhand en breng het gewicht met je linkerhand zo hoog mogelijk richting het plafond Focus: core, schouder",
-  "materiaal": [
-   "Dumbells"
-  ],
-  "spiergroep": [
-   "Core",
-   "Schouders"
-  ],
-  "type": [
-   "Kracht"
-  ],
-  "video": null
- },
- {
-  "id": 159,
-  "naam": "Bench Press + Gewichtje naar Achter",
-  "maand": "Juli 2025",
-  "bron": "Kine (Febe)",
-  "level": null,
-  "sets_reps": "2x10",
-  "beschrijving": "1. Ga op je rug op je bankje liggen met een gewicht in elk hand 2. Duw de gewichten ter hoogte van je borst verticaal omhoog 3. Laat je gestrekte armen gestrekt tot achter je hoofd zakken 4. Breng je armen nog steeds gestrekt terug verticaal omhoog 5. Buig weer door de ellebogen, terug naar startpositie Focus: schouder, borst",
-  "materiaal": [
-   "Dumbells",
-   "Fitnessbank"
-  ],
-  "spiergroep": [
-   "Schouders",
-   "Borst"
-  ],
-  "type": [
-   "Kracht"
-  ],
-  "video": null
- },
- {
-  "id": 160,
-  "naam": "ABD met Been tegen de Muur",
-  "maand": "Juli 2025",
-  "bron": "Kine (Febe)",
-  "level": null,
-  "sets_reps": "2x10",
-  "beschrijving": "1. Start met een rekker rond je knieën, je rug naar de muur gericht en op 30cm afstand van de muur 2. Steun op je linkerbeen en plooi lichtjes door de knie 3. Zet je rechtervoet tegen de muur op de hoogte van je knie 4. Draai je rechterknie naar buiten en hou je voet tegen de muur 5. Herhaal 10x en switch van kant Focus: Abductoren en evenwicht",
-  "materiaal": [
-   "Rekker/elastiek"
-  ],
-  "spiergroep": [
-   "Abductoren",
-   "Stabiliteit/evenwicht"
-  ],
-  "type": [
-   "Kracht",
-   "Stabiliteit"
-  ],
-  "video": null
- },
- {
-  "id": 161,
-  "naam": "Mountain Climbers + Pompen",
-  "maand": "Juli 2025",
-  "bron": "Kine (Febe)",
-  "level": null,
-  "sets_reps": "2x10",
-  "beschrijving": "1. Start vanuit pomphouding 2. Breng je linkerknie richting je borst en terug 3. Breng je rechterknie richting je borst en terug 4. Pomp éénmalig 5. Herhaal 10x Focus: schouder, triceps, core",
-  "materiaal": [
-   "Geen (bodyweight)"
-  ],
-  "spiergroep": [
-   "Schouders",
-   "Triceps",
-   "Core"
-  ],
-  "type": [
-   "Kracht"
-  ],
-  "video": null
- },
- {
-  "id": 162,
-  "naam": "Bridging Uitwandelen",
-  "maand": "Juli 2025",
-  "bron": "Kine (Febe)",
-  "level": null,
-  "sets_reps": "2x10",
-  "beschrijving": "1. Start vanuit bridging: schouderbladen op de grond, bekken heffen, knieën geplooid. 2. Zet kleine pasjes met beide voeten tot je knieën bijna uitgestrekt zijn. 3. Keer terug met kleine pasjes Focus: hamstring, rug",
-  "materiaal": [
-   "Geen (bodyweight)"
-  ],
-  "spiergroep": [
-   "Hamstrings",
-   "Rug"
-  ],
-  "type": [
-   "Kracht"
-  ],
-  "video": null
- },
- {
   "id": 163,
   "naam": "Copenhagen Plank (2025)",
-  "maand": "Augustus 2025",
+  "maand": "Augustus 2026",
   "bron": "Kine (Febe)",
   "level": null,
   "sets_reps": "4x15\"",
-  "beschrijving": "1. Start vanuit planking positie met bovenste been steunend op de box. 2. Hou 15\" aan voor je van kant wisselt.",
+  "beschrijving": "1. Start vanuit planking positie met je bovenste been steunend op de box 2. Hou deze positie 15\" aan voor je van kant wisselt Focus: adductoren, core",
   "materiaal": [
    "Plyobox"
   ],
@@ -3255,11 +3111,11 @@ const EXERCISES = [
  {
   "id": 164,
   "naam": "Superman",
-  "maand": "Augustus 2025",
+  "maand": "Augustus 2026",
   "bron": "Kine (Febe)",
   "level": null,
   "sets_reps": "2x10",
-  "beschrijving": "1. Start vanuit buiklig, armen schuin omhoog (V-vorm). 2. Hef borst van de grond, plooi ellebogen richting romp, strek armen weer boven hoofd uit.",
+  "beschrijving": "1. Start vanuit buiklig met je armen schuin omhoog zodat je armen en romp een V vormen. 2. Hef je borst van de grond 3. Vanuit deze positie plooi je je ellebogen en breng je ze richting je romp 4. Strek je armen nadien terug boven je hoofd uit. Focus: rug, schouders",
   "materiaal": [
    "Geen (bodyweight)"
   ],
@@ -3275,11 +3131,11 @@ const EXERCISES = [
  {
   "id": 165,
   "naam": "Tripple Extensie vanop Tip",
-  "maand": "Augustus 2025",
+  "maand": "Augustus 2026",
   "bron": "Kine (Febe)",
   "level": null,
   "sets_reps": "2x10",
-  "beschrijving": "1. Op meter van muur met gewichtbal. 2. Steun op linkerbeen, op tip. Voorover buigen, rechterbeen naar achter. 3. Snel terug recht + bal hoog tegen muur.",
+  "beschrijving": "1. Start op een meter van de muur met een gewichtbal in je handen 2. Steun op je linkerbeen en ga op je tip staan 3. Buig voorover en breng je rechterbeen naar achter 4. Kom snel terug recht en breng de bal zo hoog mogelijk tegen de muur terwijl je evenwicht op je linkertip behoudt Focus: hamstrings, kuit, evenwicht",
   "materiaal": [
    "Medicine ball"
   ],
@@ -3297,11 +3153,11 @@ const EXERCISES = [
  {
   "id": 166,
   "naam": "Backward Lunges met Aquabag",
-  "maand": "Augustus 2025",
+  "maand": "Augustus 2026",
   "bron": "Kine (Febe)",
   "level": null,
   "sets_reps": "2x10",
-  "beschrijving": "1. Aquabag met gestrekte armen voor je. 2. Grote stap naar achter met rechterbeen, door beide knieën. 3. Terug, evenwicht op linkerbeen.",
+  "beschrijving": "1. Hou de aquabag met gestrekte armen voor je uit. 2. Doe een grote stap naar achter met je rechterbeen en ga door beide knieën 3. Breng je rechterbeen terug naar voor en hou evenwicht op je linkerbeen Focus: evenwicht, kracht quadriceps",
   "materiaal": [
    "Aquabag"
   ],
@@ -3318,11 +3174,11 @@ const EXERCISES = [
  {
   "id": 167,
   "naam": "Evenwicht met Bal op Airex",
-  "maand": "Augustus 2025",
+  "maand": "Augustus 2026",
   "bron": "Kine (Febe)",
   "level": null,
   "sets_reps": "10x",
-  "beschrijving": "1. Steun op één been op airex matje. 2. Beweeg met ander been de bal een rondje rond het matje.",
+  "beschrijving": "1. Start steunend op één been op het airex matje 2. Beweeg met je andere been de bal een rondje rond het matje Focus: evenwicht",
   "materiaal": [
    "Airex kussen",
    "Medicine ball"
@@ -3338,11 +3194,11 @@ const EXERCISES = [
  {
   "id": 168,
   "naam": "Planking op Zitbal (2025)",
-  "maand": "Augustus 2025",
+  "maand": "Augustus 2026",
   "bron": "Kine (Febe)",
   "level": null,
   "sets_reps": "2x10",
-  "beschrijving": "1. Planking, handen op grond, benen op zitbal. 2. Trek knieën op richting borst en terug.",
+  "beschrijving": "1. Start vanuit planking steunend op je handen en met je benen op een zitbal 2. Trek je knieën op richting je borst en terug Focus: core",
   "materiaal": [
    "Swiss ball"
   ],
@@ -3357,11 +3213,11 @@ const EXERCISES = [
  {
   "id": 169,
   "naam": "Schuine Buikspieren (augustus)",
-  "maand": "Augustus 2025",
+  "maand": "Augustus 2026",
   "bron": "Kine (Febe)",
   "level": null,
   "sets_reps": "2x10",
-  "beschrijving": "1. Ruglig, rug tegen grond, heupen/knieën 90°. 2. Strek rechterknie, tik met linkerhand rechtervoet aan. 3. Wissel.",
+  "beschrijving": "1. Start vanuit ruglig met je rug goed tegen de grond geduwd en beide heupen en knieën 90° geplooid. 2. Strek je rechterknie en probeer met je linkerhand je rechtervoet aan te tikken 3. Keer terug naar start houding en doe hetzelfde aan de andere kant Focus: schuine buikspieren",
   "materiaal": [
    "Geen (bodyweight)"
   ],
@@ -4514,7 +4370,7 @@ const EXERCISES = [
  {
   "id": 225,
   "naam": "Front to Lateral Raises",
-  "maand": "Augustus 2026",
+  "maand": "Augustus 2025",
   "bron": "Kine (Febe)",
   "level": null,
   "sets_reps": "2x10",
@@ -4533,7 +4389,7 @@ const EXERCISES = [
  {
   "id": 226,
   "naam": "Eenbenige Squat + Rekker naar Achter",
-  "maand": "Augustus 2026",
+  "maand": "Augustus 2025",
   "bron": "Kine (Febe)",
   "level": null,
   "sets_reps": "2x10",
@@ -4555,7 +4411,7 @@ const EXERCISES = [
  {
   "id": 227,
   "naam": "Bent Over Row + Superman op Bankje",
-  "maand": "Augustus 2026",
+  "maand": "Augustus 2025",
   "bron": "Kine (Febe)",
   "level": null,
   "sets_reps": "2x10",
@@ -4578,7 +4434,7 @@ const EXERCISES = [
  {
   "id": 228,
   "naam": "Diamond Push Up",
-  "maand": "Augustus 2026",
+  "maand": "Augustus 2025",
   "bron": "Kine (Febe)",
   "level": null,
   "sets_reps": "2x10",
@@ -4599,7 +4455,7 @@ const EXERCISES = [
  {
   "id": 229,
   "naam": "SL RDL + Shoulder Press",
-  "maand": "Augustus 2026",
+  "maand": "Augustus 2025",
   "bron": "Kine (Febe)",
   "level": null,
   "sets_reps": "2x10",
@@ -4622,7 +4478,7 @@ const EXERCISES = [
  {
   "id": 230,
   "naam": "Planking naar Links en Rechts Wiebelen",
-  "maand": "Augustus 2026",
+  "maand": "Augustus 2025",
   "bron": "Kine (Febe)",
   "level": null,
   "sets_reps": "2x10",
@@ -4641,7 +4497,7 @@ const EXERCISES = [
  {
   "id": 231,
   "naam": "Buikspieren Crunches met Benen Links en Rechts",
-  "maand": "Augustus 2026",
+  "maand": "Augustus 2025",
   "bron": "Kine (Febe)",
   "level": null,
   "sets_reps": "2x10",
@@ -4651,6 +4507,466 @@ const EXERCISES = [
   ],
   "spiergroep": [
    "Buikspieren"
+  ],
+  "type": [
+   "Kracht"
+  ],
+  "video": null
+ },
+ {
+  "id": 232,
+  "naam": "Zijwaarts Wandelen op Tippen",
+  "maand": "Juli 2025",
+  "bron": "Kine (Febe)",
+  "level": null,
+  "sets_reps": "10x10 passen",
+  "beschrijving": "1. Doe een rekker rond je enkels 2. Ga op je tippen staan 3. Wandel 10 passen zijwaarts en keer terug Focus: kuiten, abductoren",
+  "materiaal": [
+   "Rekker/elastiek"
+  ],
+  "spiergroep": [
+   "Kuiten",
+   "Abductoren"
+  ],
+  "type": [
+   "Kracht"
+  ],
+  "video": null
+ },
+ {
+  "id": 233,
+  "naam": "Lunge met Draai",
+  "maand": "Juli 2025",
+  "bron": "Kine (Febe)",
+  "level": null,
+  "sets_reps": "2x10",
+  "beschrijving": "1. Start met een gewicht in je handen 2. Zet met je rechter been een grote pas naar achter en buig door de knieën (beide knieën tot 90°) 3. Draai ondertussen je romp en het gewicht naar rechts 4. Keer terug naar stand en breng je rechter knie in de lucht, het gewicht boven je hoofd en ga op je linkerbeen op de tip staan 5. Doe hetzelfde voor de andere kant Focus: core, schouder, quadriceps, kuiten, evenwicht",
+  "materiaal": [
+   "Dumbells"
+  ],
+  "spiergroep": [
+   "Core",
+   "Schouders",
+   "Quadriceps",
+   "Kuiten",
+   "Stabiliteit/evenwicht"
+  ],
+  "type": [
+   "Kracht",
+   "Stabiliteit"
+  ],
+  "video": null
+ },
+ {
+  "id": 234,
+  "naam": "Superman op de Knie",
+  "maand": "Juli 2025",
+  "bron": "Kine (Febe)",
+  "level": null,
+  "sets_reps": "2x10",
+  "beschrijving": "1. Start vanuit handen en knieën steun 2. Hef beide voeten van de grond waardoor je enkel op je knieën steunt 3. Strek gekruist je linker arm en rechter been uit 4. Plooi ze terug en tik met je linkerelleboog je rechter knie 5. Doe hetzelfde met je andere been en arm Focus: core",
+  "materiaal": [
+   "Geen (bodyweight)"
+  ],
+  "spiergroep": [
+   "Core"
+  ],
+  "type": [
+   "Kracht"
+  ],
+  "video": null
+ },
+ {
+  "id": 235,
+  "naam": "Superman Buiklig",
+  "maand": "Juli 2025",
+  "bron": "Kine (Febe)",
+  "level": null,
+  "sets_reps": "2x10",
+  "beschrijving": "1. Ga op je buik liggen met je armen gestrekt boven je hoofd 2. Hef linkerarm en rechter been omhoog en hou drie seconden aan 3. Wissel van kant Focus: rug, glutei, hamstrings",
+  "materiaal": [
+   "Geen (bodyweight)"
+  ],
+  "spiergroep": [
+   "Rug",
+   "Glutei",
+   "Hamstrings"
+  ],
+  "type": [
+   "Kracht"
+  ],
+  "video": null
+ },
+ {
+  "id": 236,
+  "naam": "Tripple Extension met Aquabag (juli 2025)",
+  "maand": "Juli 2025",
+  "bron": "Kine (Febe)",
+  "level": null,
+  "sets_reps": "2x10",
+  "beschrijving": "1. Start met de aquabag in je armen voor je box 2. Hef je rechterbeen omhoog naar achter en buig je romp (gestrekt) naar voor 3. Beweeg je rechterbeen in een snelle beweging op de box en ga met je linkerbeen op je tip staan 4. Doe hetzelfde langs de andere kant Focus: kuiten, hamstring, schouder, rug",
+  "materiaal": [
+   "Aquabag",
+   "Plyobox"
+  ],
+  "spiergroep": [
+   "Kuiten",
+   "Hamstrings",
+   "Schouders",
+   "Rug"
+  ],
+  "type": [
+   "Explosief"
+  ],
+  "video": null
+ },
+ {
+  "id": 237,
+  "naam": "Mountain Push-up",
+  "maand": "Juli 2025",
+  "bron": "Kine (Febe)",
+  "level": null,
+  "sets_reps": "2x10",
+  "beschrijving": "1. Start vanuit push-up houding 2. Voer de pompbeweging uit en breng gelijktijdig je knie langs opzij richting je hoofd Focus: Borst, schouder, triceps, core",
+  "materiaal": [
+   "Geen (bodyweight)"
+  ],
+  "spiergroep": [
+   "Borst",
+   "Schouders",
+   "Triceps",
+   "Core"
+  ],
+  "type": [
+   "Kracht"
+  ],
+  "video": null
+ },
+ {
+  "id": 238,
+  "naam": "Eenbenige Hip Thrust (juli 2025)",
+  "maand": "Juli 2025",
+  "bron": "Kine (Febe)",
+  "level": null,
+  "sets_reps": "2x10",
+  "beschrijving": "1. Ga op de grond zitten, met je bovenrug rustend tegen de box 2. Plaats 1 voet plat op de grond, hou de andere gestrekt omhoog 3. Duw je heupen omhoog tot je bovenlichaam een rechte lijn vormt met je opgetilde bovenbeen 4. Extra: leg een gewicht ter hoogte van je heupen Focus: glutei, hamstring, rug",
+  "materiaal": [
+   "Plyobox",
+   "Dumbells"
+  ],
+  "spiergroep": [
+   "Glutei",
+   "Hamstrings",
+   "Rug"
+  ],
+  "type": [
+   "Kracht"
+  ],
+  "video": null
+ },
+ {
+  "id": 239,
+  "naam": "Eenbenige Bridge met Abductie (juli 2025)",
+  "maand": "Juli 2025",
+  "bron": "Kine (Febe)",
+  "level": null,
+  "sets_reps": "2x10",
+  "beschrijving": "1. Start vanuit ruglig met knieën geplooid en voeten plat op de grond en een rekker net boven de knieën 2. Strek één knie uit, zodat dit been niet op de grond steunt 3. Hef je bekken van de grond 4. Beweeg je getilde been naar buiten 5. Keer terug naar startpositie Focus: core, rug, abductoren",
+  "materiaal": [
+   "Rekker/elastiek"
+  ],
+  "spiergroep": [
+   "Core",
+   "Rug",
+   "Abductoren"
+  ],
+  "type": [
+   "Kracht"
+  ],
+  "video": null
+ },
+ {
+  "id": 240,
+  "naam": "Eenbenige Hip Thrust (mei 2026)",
+  "maand": "Mei 2026",
+  "bron": "Kine (Febe)",
+  "level": null,
+  "sets_reps": "2x10",
+  "beschrijving": "1. Leg je met je schouderbladen op de box met een gewicht ter hoogte van je bekken 2. Strek 1 been uit, waardoor je slechts op 1 been steunt 3. Zak met je bekken zo diep mogelijk naar de grond 4. Keer terug naar startpositie Focus: Hamstring, rug, gluteï",
+  "materiaal": [
+   "Plyobox",
+   "Dumbells"
+  ],
+  "spiergroep": [
+   "Hamstrings",
+   "Rug",
+   "Glutei"
+  ],
+  "type": [
+   "Kracht"
+  ],
+  "video": null
+ },
+ {
+  "id": 241,
+  "naam": "Triceps Dips (mei 2026)",
+  "maand": "Mei 2026",
+  "bron": "Kine (Febe)",
+  "level": null,
+  "sets_reps": "2x10",
+  "beschrijving": "1. Start al zittend op de box met je handen naast je heupen en je vingers naar voor gericht, leg terug een gewicht thv je bekken 2. Schuif naar voor en zet je voeten iets verder naar voor zodat enkel je handen nog op de box steunen 3. Zak naar beneden door je ellebogen te plooien tot een hoek van ongeveer 90° 4. Strek je ellebogen terug Focus: triceps, schouder, core",
+  "materiaal": [
+   "Plyobox",
+   "Dumbells"
+  ],
+  "spiergroep": [
+   "Triceps",
+   "Schouders",
+   "Core"
+  ],
+  "type": [
+   "Kracht"
+  ],
+  "video": null
+ },
+ {
+  "id": 242,
+  "naam": "Planking Rondje",
+  "maand": "Mei 2026",
+  "bron": "Kine (Febe)",
+  "level": null,
+  "sets_reps": "4x15\" elk",
+  "beschrijving": "1. Start vanuit front planking, hou 15\" aan 2. Draai naar side planking, hou 15\" aan 3. Draai nog steunend op de ellebogen met je rug richting de grond, hou 15\" aan 4. Draai naar side planking, hou 15\" aan Focus: core (rechte en schuine buikspieren + rug)",
+  "materiaal": [
+   "Geen (bodyweight)"
+  ],
+  "spiergroep": [
+   "Core",
+   "Buikspieren",
+   "Rug"
+  ],
+  "type": [
+   "Kracht"
+  ],
+  "video": null
+ },
+ {
+  "id": 243,
+  "naam": "Bear Position to Plank",
+  "maand": "Mei 2026",
+  "bron": "Kine (Febe)",
+  "level": null,
+  "sets_reps": "2x10",
+  "beschrijving": "1. Start vanuit planking maar steunend op je handen (niet je onderarmen) 2. Neem vanuit deze positie kleine stapjes naar voor tot je knieën en heupen 90° geplooid staan 3. Keer terug naar planking 4. Hou gedurende de volledige oefening je rug goed recht Focus: schouder, core",
+  "materiaal": [
+   "Geen (bodyweight)"
+  ],
+  "spiergroep": [
+   "Schouders",
+   "Core"
+  ],
+  "type": [
+   "Kracht"
+  ],
+  "video": null
+ },
+ {
+  "id": 244,
+  "naam": "Evenwicht met Bal op Step",
+  "maand": "Mei 2026",
+  "bron": "Kine (Febe)",
+  "level": null,
+  "sets_reps": "2x5 heen en terug",
+  "beschrijving": "1. Zet een step loodrecht tegen de muur met een bal ernaast 2. Steun enkel met je voorvoet op de step 3. Met je andere voet breng je de bal afwisselend naar voor en achter de step Focus: kuiten, evenwicht",
+  "materiaal": [
+   "Step",
+   "Medicine ball"
+  ],
+  "spiergroep": [
+   "Kuiten",
+   "Stabiliteit/evenwicht"
+  ],
+  "type": [
+   "Stabiliteit"
+  ],
+  "video": null
+ },
+ {
+  "id": 245,
+  "naam": "Planking op Zitbal (mei 2026)",
+  "maand": "Mei 2026",
+  "bron": "Kine (Febe)",
+  "level": null,
+  "sets_reps": "2x10",
+  "beschrijving": "1. Start vanuit planking met je onderarmen steunend op de zitbal 2. Maak kleine cirkels met de zitbal Focus: core, evenwicht",
+  "materiaal": [
+   "Swiss ball"
+  ],
+  "spiergroep": [
+   "Core",
+   "Stabiliteit/evenwicht"
+  ],
+  "type": [
+   "Kracht",
+   "Stabiliteit"
+  ],
+  "video": null
+ },
+ {
+  "id": 246,
+  "naam": "Schuine Crunches (mei 2026)",
+  "maand": "Mei 2026",
+  "bron": "Kine (Febe)",
+  "level": null,
+  "sets_reps": "2x10",
+  "beschrijving": "1. Start vanuit ruglig, buig je knieën 90° met voeten op de grond 2. Leg je rechtervoet thv je linkerknie 3. Leg je armen in je nek 4. Breng je linkerelleboog zo dicht mogelijk richting je rechterknie 5. Herhaal 10x en wissel van kant Focus: schuine buikspieren",
+  "materiaal": [
+   "Geen (bodyweight)"
+  ],
+  "spiergroep": [
+   "Buikspieren"
+  ],
+  "type": [
+   "Kracht"
+  ],
+  "video": null
+ },
+ {
+  "id": 247,
+  "naam": "Wandelen met Rekker rond Voorvoet (juli 2026)",
+  "maand": "Juli 2026",
+  "bron": "Kine (Febe)",
+  "level": null,
+  "sets_reps": "3 lengtes heen en terug",
+  "beschrijving": "1. Start vanuit stand met een rekker rond je voorvoeten 2. Ga op je tippen staan en wandel zigzaggend naar de andere kant van de ruimte 3. Let op als je je been bijtrekt, dat je dit traag en gecontroleerd doet Focus: Kuiten, evenwicht, abductoren",
+  "materiaal": [
+   "Rekker/elastiek"
+  ],
+  "spiergroep": [
+   "Kuiten",
+   "Stabiliteit/evenwicht",
+   "Abductoren"
+  ],
+  "type": [
+   "Kracht"
+  ],
+  "video": null
+ },
+ {
+  "id": 248,
+  "naam": "Eenbenige Wall Sit (juli 2026)",
+  "maand": "Juli 2026",
+  "bron": "Kine (Febe)",
+  "level": null,
+  "sets_reps": "5x20\"",
+  "beschrijving": "1. Ga tegen de muur zitten met je knieën 90° gebogen 2. Strek 1 been uit, waardoor je enkel op het andere been steunt 3. Hou 20\" aan en wissel van kant Focus: quadriceps",
+  "materiaal": [
+   "Geen (bodyweight)"
+  ],
+  "spiergroep": [
+   "Quadriceps"
+  ],
+  "type": [
+   "Kracht"
+  ],
+  "video": null
+ },
+ {
+  "id": 249,
+  "naam": "Plank met Gewichtje (juli 2026)",
+  "maand": "Juli 2026",
+  "bron": "Kine (Febe)",
+  "level": null,
+  "sets_reps": "2x10",
+  "beschrijving": "1. Start vanuit pomphouding met een gewichtje aan je linkerhand 2. Breng het gewichtje met je linkerhand zo ver mogelijk naar rechts 3. Draai daarna de omgekeerde richting uit, naar een side plank gesteund op je rechterhand en breng het gewicht met je linkerhand zo hoog mogelijk richting het plafond Focus: core, schouder",
+  "materiaal": [
+   "Dumbells"
+  ],
+  "spiergroep": [
+   "Core",
+   "Schouders"
+  ],
+  "type": [
+   "Kracht"
+  ],
+  "video": null
+ },
+ {
+  "id": 250,
+  "naam": "Bench Press + Gewichtje naar Achter (juli 2026)",
+  "maand": "Juli 2026",
+  "bron": "Kine (Febe)",
+  "level": null,
+  "sets_reps": "2x10",
+  "beschrijving": "1. Ga op je rug op je bankje liggen met een gewicht in elk hand 2. Duw de gewichten ter hoogte van je borst verticaal omhoog 3. Laat je gestrekte armen gestrekt tot achter je hoofd zakken 4. Breng je armen nog steeds gestrekt terug verticaal omhoog 5. Buig weer door de ellebogen, terug naar startpositie Focus: schouder, borst",
+  "materiaal": [
+   "Dumbells",
+   "Fitnessbank"
+  ],
+  "spiergroep": [
+   "Schouders",
+   "Borst"
+  ],
+  "type": [
+   "Kracht"
+  ],
+  "video": null
+ },
+ {
+  "id": 251,
+  "naam": "ABD met Been tegen de Muur (juli 2026)",
+  "maand": "Juli 2026",
+  "bron": "Kine (Febe)",
+  "level": null,
+  "sets_reps": "2x10",
+  "beschrijving": "1. Start met een rekker rond je knieën, je rug naar de muur gericht en op 30cm afstand van de muur 2. Steun op je linkerbeen en plooi lichtjes door de knie 3. Zet je rechtervoet tegen de muur op de hoogte van je knie 4. Draai je rechterknie naar buiten en hou je voet tegen de muur 5. Herhaal 10x en switch van kant Focus: Abductoren en evenwicht",
+  "materiaal": [
+   "Rekker/elastiek"
+  ],
+  "spiergroep": [
+   "Abductoren",
+   "Stabiliteit/evenwicht"
+  ],
+  "type": [
+   "Kracht"
+  ],
+  "video": null
+ },
+ {
+  "id": 252,
+  "naam": "Mountain Climbers + Pompen (juli 2026)",
+  "maand": "Juli 2026",
+  "bron": "Kine (Febe)",
+  "level": null,
+  "sets_reps": "2x10",
+  "beschrijving": "1. Start vanuit pomphouding 2. Breng je linkerknie richting je borst en terug 3. Breng je rechterknie richting je borst en terug 4. Pomp éénmalig 5. Herhaal 10x Focus: schouder, triceps, core",
+  "materiaal": [
+   "Geen (bodyweight)"
+  ],
+  "spiergroep": [
+   "Schouders",
+   "Triceps",
+   "Core"
+  ],
+  "type": [
+   "Kracht"
+  ],
+  "video": null
+ },
+ {
+  "id": 253,
+  "naam": "Bridging Uitwandelen (juli 2026)",
+  "maand": "Juli 2026",
+  "bron": "Kine (Febe)",
+  "level": null,
+  "sets_reps": "2x10",
+  "beschrijving": "1. Start vanuit bridging: schouderbladen op de grond, bekken heffen, knieën geplooid. 2. Zet kleine pasjes met beide voeten tot je knieën bijna uitgestrekt zijn. 3. Keer terug met kleine pasjes Focus: hamstring, rug",
+  "materiaal": [
+   "Geen (bodyweight)"
+  ],
+  "spiergroep": [
+   "Hamstrings",
+   "Rug"
   ],
   "type": [
    "Kracht"

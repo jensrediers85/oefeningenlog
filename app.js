@@ -39,7 +39,7 @@ const MONTH_ORDER = [
 "Juni 2024","Juli 2024","Augustus 2024","September 2024","Oktober 2024","November 2024","December 2024",
 "Januari 2025","Februari 2025","Maart 2025","April 2025","Mei 2025",
 "Juni 2025","Juli 2025","Augustus 2025","September 2025","November 2025","December 2025",
-"Januari 2026","Februari 2026","Maart 2026","April 2026","Juni 2026","Augustus 2026"
+"Januari 2026","Februari 2026","Maart 2026","April 2026","Mei 2026","Juni 2026","Juli 2026","Augustus 2026"
 ];
 const monthIndex = m => MONTH_ORDER.indexOf(m);
 
