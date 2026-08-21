@@ -738,8 +738,9 @@ async function openDetail(ex){
   sheet.querySelector("#photoInput").addEventListener("change", async (e) => {
     const files = [...e.target.files];
     if(!files.length) return;
+    statusEl.textContent = "Bezig…"; // immediate feedback, before any network call
     try{
-      const current = await getPhotos(ex.id);
+      const current = await withTimeout(getPhotos(ex.id), 15000, "network-timeout").catch(() => []);
       const compressed = [];
       let failCount = 0;
       let lastError = "";
@@ -756,7 +757,7 @@ async function openDetail(ex){
       if(compressed.length){
         const updated = [...current, ...compressed];
         statusEl.textContent = "Opslaan…";
-        await setPhotos(ex.id, updated);
+        await withTimeout(setPhotos(ex.id, updated), 15000, "Opslaan duurde te lang — check je internetverbinding en probeer opnieuw.");
         renderPhotos(updated);
       }
       if(failCount === 0){
