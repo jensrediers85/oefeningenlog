@@ -73,7 +73,7 @@ async function loadPhotoIndex(){
   photoIndex = new Set();
   try{
     const qy = query(collection(db, "exercisePhotos"), where("uid", "==", currentUser.uid));
-    const snap = await getDocs(qy);
+    const snap = await withTimeout(getDocs(qy), 10000, "timeout");
     snap.forEach(d => {
       const data = d.data();
       if(data.photos && data.photos.length) photoIndex.add(String(data.exerciseId));
@@ -106,7 +106,7 @@ async function loadTagOverrides(){
   tagOverrides = new Map();
   try{
     const qy = query(collection(db, "exerciseTags"), where("uid", "==", currentUser.uid));
-    const snap = await getDocs(qy);
+    const snap = await withTimeout(getDocs(qy), 10000, "timeout");
     snap.forEach(d => {
       const data = d.data();
       tagOverrides.set(data.exerciseId, { type: data.type||[], materiaal: data.materiaal||[], spiergroep: data.spiergroep||[] });
@@ -118,7 +118,7 @@ async function loadRepsOverrides(){
   repsOverrides = new Map();
   try{
     const qy = query(collection(db, "exerciseReps"), where("uid", "==", currentUser.uid));
-    const snap = await getDocs(qy);
+    const snap = await withTimeout(getDocs(qy), 10000, "timeout");
     snap.forEach(d => {
       const data = d.data();
       repsOverrides.set(data.exerciseId, data.sets_reps || "");
@@ -134,7 +134,7 @@ async function loadDeletedSet(){
   deletedSet = new Set();
   try{
     const qy = query(collection(db, "exerciseDeleted"), where("uid", "==", currentUser.uid));
-    const snap = await getDocs(qy);
+    const snap = await withTimeout(getDocs(qy), 10000, "timeout");
     snap.forEach(d => {
       const data = d.data();
       deletedSet.add(String(data.exerciseId));
@@ -146,7 +146,7 @@ async function loadHiddenSet(){
   hiddenSet = new Set();
   try{
     const qy = query(collection(db, "exerciseHidden"), where("uid", "==", currentUser.uid));
-    const snap = await getDocs(qy);
+    const snap = await withTimeout(getDocs(qy), 10000, "timeout");
     snap.forEach(d => {
       const data = d.data();
       hiddenSet.add(String(data.exerciseId));
@@ -214,7 +214,7 @@ async function loadDescOverrides(){
   descOverrides = new Map();
   try{
     const qy = query(collection(db, "exerciseDescriptions"), where("uid", "==", currentUser.uid));
-    const snap = await getDocs(qy);
+    const snap = await withTimeout(getDocs(qy), 10000, "timeout");
     snap.forEach(d => {
       const data = d.data();
       descOverrides.set(data.exerciseId, data.beschrijving || "");
@@ -237,7 +237,7 @@ async function loadWeightOverrides(){
   weightOverrides = new Map();
   try{
     const qy = query(collection(db, "exerciseWeights"), where("uid", "==", currentUser.uid));
-    const snap = await getDocs(qy);
+    const snap = await withTimeout(getDocs(qy), 10000, "timeout");
     snap.forEach(d => {
       const data = d.data();
       weightOverrides.set(data.exerciseId, data.weight || "");
@@ -273,7 +273,7 @@ async function loadNoteIndex(){
   noteIndex = new Set();
   try{
     const qy = query(collection(db, "exerciseNotes"), where("uid", "==", currentUser.uid));
-    const snap = await getDocs(qy);
+    const snap = await withTimeout(getDocs(qy), 10000, "timeout");
     snap.forEach(d => {
       const data = d.data();
       if(data.note && data.note.trim()) noteIndex.add(String(data.exerciseId));
@@ -404,7 +404,7 @@ function renderResults(){
   main.innerHTML = "";
 
   const filtered = viewExercises.filter(matches);
-  document.getElementById("subcount").textContent = `${EXERCISES.length} oefeningen · ${filtered.length} getoond · verborgen:${hiddenSet.size} verwijderd:${deletedSet.size}`;
+  document.getElementById("subcount").textContent = `${EXERCISES.length} oefeningen · ${filtered.length} getoond`;
 
   if(filtered.length === 0){
     empty.hidden = false;
@@ -943,14 +943,20 @@ let wired = false;
 async function bootApp(){
   if(!wired){ buildChips(); wireControls(); wired = true; }
   document.getElementById("userEmail").textContent = currentUser.email;
-  await loadPhotoIndex();
-  await loadTagOverrides();
-  await loadRepsOverrides();
-  await loadDescOverrides();
-  await loadNoteIndex();
-  await loadWeightOverrides();
-  await loadDeletedSet();
-  await loadHiddenSet();
+  document.getElementById("subcount").textContent = "Bezig met laden…";
+  document.getElementById("results").innerHTML = `<p style="color:var(--ink-soft); padding:20px 0; text-align:center;">Even geduld, je gegevens worden opgehaald…</p>`;
+  // Run all independent Firestore reads in parallel instead of one-by-one — much
+  // faster, especially on a slower connection.
+  await Promise.all([
+    loadPhotoIndex(),
+    loadTagOverrides(),
+    loadRepsOverrides(),
+    loadDescOverrides(),
+    loadNoteIndex(),
+    loadWeightOverrides(),
+    loadDeletedSet(),
+    loadHiddenSet()
+  ]);
   rebuildViewExercises();
   render();
 }
