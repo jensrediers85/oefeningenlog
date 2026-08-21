@@ -281,26 +281,51 @@ async function loadNoteIndex(){
   }catch(e){ console.error("Kon notitie-index niet laden", e); }
 }
 
-function fileToCompressedDataURL(file, maxDim=900, quality=0.62){
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    const reader = new FileReader();
-    reader.onload = () => { img.src = reader.result; };
-    reader.onerror = reject;
-    img.onload = () => {
-      let { width, height } = img;
-      if(width > maxDim || height > maxDim){
-        if(width > height){ height = Math.round(height * maxDim/width); width = maxDim; }
-        else{ width = Math.round(width * maxDim/height); height = maxDim; }
+function withTimeout(promise, ms, message){
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => setTimeout(() => reject(new Error(message || "timeout")), ms))
+  ]);
+}
+
+async function drawToJpeg(bitmapLike, maxDim, quality){
+  let width = bitmapLike.width, height = bitmapLike.height;
+  if(width > maxDim || height > maxDim){
+    if(width > height){ height = Math.round(height * maxDim/width); width = maxDim; }
+    else{ width = Math.round(width * maxDim/height); height = maxDim; }
+  }
+  const canvas = document.createElement("canvas");
+  canvas.width = width; canvas.height = height;
+  canvas.getContext("2d").drawImage(bitmapLike, 0, 0, width, height);
+  return canvas.toDataURL("image/jpeg", quality);
+}
+
+// Prefer createImageBitmap: it natively decodes HEIC/HEIF (the default iPhone photo
+// format) far more reliably than loading into an <img> element, which can hang
+// indefinitely on some formats. Falls back to the old Image-based method if needed.
+async function fileToCompressedDataURL(file, maxDim=900, quality=0.62){
+  const attempt = async () => {
+    if(window.createImageBitmap){
+      try{
+        const bitmap = await createImageBitmap(file);
+        const result = await drawToJpeg(bitmap, maxDim, quality);
+        bitmap.close && bitmap.close();
+        return result;
+      }catch(err){
+        // fall through to the <img>-based method below
       }
-      const canvas = document.createElement("canvas");
-      canvas.width = width; canvas.height = height;
-      canvas.getContext("2d").drawImage(img, 0, 0, width, height);
-      resolve(canvas.toDataURL("image/jpeg", quality));
-    };
-    img.onerror = reject;
-    reader.readAsDataURL(file);
-  });
+    }
+    return await new Promise((resolve, reject) => {
+      const img = new Image();
+      const reader = new FileReader();
+      reader.onload = () => { img.src = reader.result; };
+      reader.onerror = () => reject(new Error("Kon bestand niet lezen"));
+      img.onload = () => { drawToJpeg(img, maxDim, quality).then(resolve).catch(reject); };
+      img.onerror = () => reject(new Error("Kon afbeelding niet decoderen"));
+      reader.readAsDataURL(file);
+    });
+  };
+  return withTimeout(attempt(), 20000, "Verwerken duurde te lang — probeer een andere foto of formaat (bv. exporteer als JPEG).");
 }
 
 function activeFilterCount(){
@@ -713,21 +738,39 @@ async function openDetail(ex){
   sheet.querySelector("#photoInput").addEventListener("change", async (e) => {
     const files = [...e.target.files];
     if(!files.length) return;
-    statusEl.textContent = "Foto's verwerken…";
     try{
       const current = await getPhotos(ex.id);
       const compressed = [];
-      for(const file of files){
-        compressed.push(await fileToCompressedDataURL(file));
+      let failCount = 0;
+      let lastError = "";
+      for(let i = 0; i < files.length; i++){
+        statusEl.textContent = files.length > 1 ? `Foto ${i+1} van ${files.length} verwerken…` : "Foto verwerken…";
+        try{
+          compressed.push(await fileToCompressedDataURL(files[i]));
+        }catch(err){
+          console.error("Foto overslaan door fout:", err);
+          failCount++;
+          lastError = (err && err.message) || "onbekende fout";
+        }
       }
-      const updated = [...current, ...compressed];
-      await setPhotos(ex.id, updated);
-      renderPhotos(updated);
-      statusEl.textContent = "";
+      if(compressed.length){
+        const updated = [...current, ...compressed];
+        statusEl.textContent = "Opslaan…";
+        await setPhotos(ex.id, updated);
+        renderPhotos(updated);
+      }
+      if(failCount === 0){
+        statusEl.textContent = "";
+      }else if(compressed.length){
+        statusEl.textContent = `${compressed.length} foto('s) toegevoegd, ${failCount} mislukt (${lastError}).`;
+      }else{
+        statusEl.textContent = `Kon geen enkele foto verwerken (${lastError}). Probeer een andere foto of exporteer als JPEG.`;
+      }
     }catch(err){
       console.error(err);
       statusEl.textContent = "Er ging iets mis bij het opslaan.";
     }
+    e.target.value = "";
   });
 
   // ===== Tag editor =====
