@@ -70,14 +70,16 @@ async function setPhotos(exId, photos){
 }
 
 async function loadPhotoIndex(){
-  photoIndex = new Set();
   try{
-    const qy = query(collection(db, "exercisePhotos"), where("uid", "==", currentUser.uid));
-    const snap = await withTimeout(getDocs(qy), 10000, "timeout");
-    snap.forEach(d => {
-      const data = d.data();
-      if(data.photos && data.photos.length) photoIndex.add(String(data.exerciseId));
-    });
+    await withRetry(async () => {
+      photoIndex = new Set();
+      const qy = query(collection(db, "exercisePhotos"), where("uid", "==", currentUser.uid));
+      const snap = await withTimeout(getDocs(qy), 10000, "timeout");
+      snap.forEach(d => {
+        const data = d.data();
+        if(data.photos && data.photos.length) photoIndex.add(String(data.exerciseId));
+      });
+    }, "loadPhotoIndex");
   }catch(e){ console.error("Kon foto-index niet laden", e); }
 }
 
@@ -103,26 +105,30 @@ function effectiveExercise(ex){
 }
 
 async function loadTagOverrides(){
-  tagOverrides = new Map();
   try{
-    const qy = query(collection(db, "exerciseTags"), where("uid", "==", currentUser.uid));
-    const snap = await withTimeout(getDocs(qy), 10000, "timeout");
-    snap.forEach(d => {
-      const data = d.data();
-      tagOverrides.set(data.exerciseId, { type: data.type||[], materiaal: data.materiaal||[], spiergroep: data.spiergroep||[] });
-    });
+    await withRetry(async () => {
+      tagOverrides = new Map();
+      const qy = query(collection(db, "exerciseTags"), where("uid", "==", currentUser.uid));
+      const snap = await withTimeout(getDocs(qy), 10000, "timeout");
+      snap.forEach(d => {
+        const data = d.data();
+        tagOverrides.set(data.exerciseId, { type: data.type||[], materiaal: data.materiaal||[], spiergroep: data.spiergroep||[] });
+      });
+    }, "loadTagOverrides");
   }catch(e){ console.error("Kon tag-aanpassingen niet laden", e); }
 }
 
 async function loadRepsOverrides(){
-  repsOverrides = new Map();
   try{
-    const qy = query(collection(db, "exerciseReps"), where("uid", "==", currentUser.uid));
-    const snap = await withTimeout(getDocs(qy), 10000, "timeout");
-    snap.forEach(d => {
-      const data = d.data();
-      repsOverrides.set(data.exerciseId, data.sets_reps || "");
-    });
+    await withRetry(async () => {
+      repsOverrides = new Map();
+      const qy = query(collection(db, "exerciseReps"), where("uid", "==", currentUser.uid));
+      const snap = await withTimeout(getDocs(qy), 10000, "timeout");
+      snap.forEach(d => {
+        const data = d.data();
+        repsOverrides.set(data.exerciseId, data.sets_reps || "");
+      });
+    }, "loadRepsOverrides");
   }catch(e){ console.error("Kon reps-aanpassingen niet laden", e); }
 }
 
@@ -131,26 +137,30 @@ function rebuildViewExercises(){
 }
 
 async function loadDeletedSet(){
-  deletedSet = new Set();
   try{
-    const qy = query(collection(db, "exerciseDeleted"), where("uid", "==", currentUser.uid));
-    const snap = await withTimeout(getDocs(qy), 10000, "timeout");
-    snap.forEach(d => {
-      const data = d.data();
-      deletedSet.add(String(data.exerciseId));
-    });
+    await withRetry(async () => {
+      deletedSet = new Set();
+      const qy = query(collection(db, "exerciseDeleted"), where("uid", "==", currentUser.uid));
+      const snap = await withTimeout(getDocs(qy), 10000, "timeout");
+      snap.forEach(d => {
+        const data = d.data();
+        deletedSet.add(String(data.exerciseId));
+      });
+    }, "loadDeletedSet");
   }catch(e){ console.error("Kon verwijderde oefeningen niet laden", e); }
 }
 
 async function loadHiddenSet(){
-  hiddenSet = new Set();
   try{
-    const qy = query(collection(db, "exerciseHidden"), where("uid", "==", currentUser.uid));
-    const snap = await withTimeout(getDocs(qy), 10000, "timeout");
-    snap.forEach(d => {
-      const data = d.data();
-      hiddenSet.add(String(data.exerciseId));
-    });
+    await withRetry(async () => {
+      hiddenSet = new Set();
+      const qy = query(collection(db, "exerciseHidden"), where("uid", "==", currentUser.uid));
+      const snap = await withTimeout(getDocs(qy), 10000, "timeout");
+      snap.forEach(d => {
+        const data = d.data();
+        hiddenSet.add(String(data.exerciseId));
+      });
+    }, "loadHiddenSet");
   }catch(e){ console.error("Kon verborgen oefeningen niet laden", e); }
 }
 
@@ -211,14 +221,16 @@ async function saveReps(exId, value){
 }
 
 async function loadDescOverrides(){
-  descOverrides = new Map();
   try{
-    const qy = query(collection(db, "exerciseDescriptions"), where("uid", "==", currentUser.uid));
-    const snap = await withTimeout(getDocs(qy), 10000, "timeout");
-    snap.forEach(d => {
-      const data = d.data();
-      descOverrides.set(data.exerciseId, data.beschrijving || "");
-    });
+    await withRetry(async () => {
+      descOverrides = new Map();
+      const qy = query(collection(db, "exerciseDescriptions"), where("uid", "==", currentUser.uid));
+      const snap = await withTimeout(getDocs(qy), 10000, "timeout");
+      snap.forEach(d => {
+        const data = d.data();
+        descOverrides.set(data.exerciseId, data.beschrijving || "");
+      });
+    }, "loadDescOverrides");
   }catch(e){ console.error("Kon omschrijving-aanpassingen niet laden", e); }
 }
 
@@ -234,14 +246,16 @@ async function saveDescription(exId, value){
 }
 
 async function loadWeightOverrides(){
-  weightOverrides = new Map();
   try{
-    const qy = query(collection(db, "exerciseWeights"), where("uid", "==", currentUser.uid));
-    const snap = await withTimeout(getDocs(qy), 10000, "timeout");
-    snap.forEach(d => {
-      const data = d.data();
-      weightOverrides.set(data.exerciseId, data.weight || "");
-    });
+    await withRetry(async () => {
+      weightOverrides = new Map();
+      const qy = query(collection(db, "exerciseWeights"), where("uid", "==", currentUser.uid));
+      const snap = await withTimeout(getDocs(qy), 10000, "timeout");
+      snap.forEach(d => {
+        const data = d.data();
+        weightOverrides.set(data.exerciseId, data.weight || "");
+      });
+    }, "loadWeightOverrides");
   }catch(e){ console.error("Kon gewicht-aanpassingen niet laden", e); }
 }
 
@@ -270,14 +284,16 @@ async function saveNote(exId, note){
 }
 
 async function loadNoteIndex(){
-  noteIndex = new Set();
   try{
-    const qy = query(collection(db, "exerciseNotes"), where("uid", "==", currentUser.uid));
-    const snap = await withTimeout(getDocs(qy), 10000, "timeout");
-    snap.forEach(d => {
-      const data = d.data();
-      if(data.note && data.note.trim()) noteIndex.add(String(data.exerciseId));
-    });
+    await withRetry(async () => {
+      noteIndex = new Set();
+      const qy = query(collection(db, "exerciseNotes"), where("uid", "==", currentUser.uid));
+      const snap = await withTimeout(getDocs(qy), 10000, "timeout");
+      snap.forEach(d => {
+        const data = d.data();
+        if(data.note && data.note.trim()) noteIndex.add(String(data.exerciseId));
+      });
+    }, "loadNoteIndex");
   }catch(e){ console.error("Kon notitie-index niet laden", e); }
 }
 
@@ -286,6 +302,18 @@ function withTimeout(promise, ms, message){
     promise,
     new Promise((_, reject) => setTimeout(() => reject(new Error(message || "timeout")), ms))
   ]);
+}
+
+// Retries a query once after a short pause if the first attempt fails — guards
+// against a transient hiccup right after login when several reads fire at once.
+async function withRetry(fn, label){
+  try{
+    return await fn();
+  }catch(err){
+    console.error(`${label}: eerste poging mislukt, opnieuw proberen…`, err);
+    await new Promise(r => setTimeout(r, 700));
+    return await fn();
+  }
 }
 
 async function drawToJpeg(bitmapLike, maxDim, quality){
