@@ -307,13 +307,23 @@ function withTimeout(promise, ms, message){
 // Retries a query once after a short pause if the first attempt fails — guards
 // against a transient hiccup right after login when several reads fire at once.
 async function withRetry(fn, label){
+  const delays = [500, 1500, 3000]; // up to 3 retries with increasing backoff
+  let lastErr;
   try{
     return await fn();
   }catch(err){
-    console.error(`${label}: eerste poging mislukt, opnieuw proberen…`, err);
-    await new Promise(r => setTimeout(r, 700));
-    return await fn();
+    lastErr = err;
   }
+  for(const delay of delays){
+    console.error(`${label}: poging mislukt, opnieuw proberen na ${delay}ms…`, lastErr);
+    await new Promise(r => setTimeout(r, delay));
+    try{
+      return await fn();
+    }catch(err){
+      lastErr = err;
+    }
+  }
+  throw lastErr;
 }
 
 async function drawToJpeg(bitmapLike, maxDim, quality){
@@ -973,6 +983,12 @@ async function bootApp(){
   document.getElementById("userEmail").textContent = currentUser.email;
   document.getElementById("subcount").textContent = "Bezig met laden…";
   document.getElementById("results").innerHTML = `<p style="color:var(--ink-soft); padding:20px 0; text-align:center;">Even geduld, je gegevens worden opgehaald…</p>`;
+  // Make sure the auth token is fully ready before firing several reads at once —
+  // guards against a race right after login where some parallel reads would
+  // otherwise silently fail.
+  try{
+    if(currentUser.getIdToken){ await currentUser.getIdToken(); }
+  }catch(err){ console.error("Kon ID-token niet vernieuwen", err); }
   // Run all independent Firestore reads in parallel instead of one-by-one — much
   // faster, especially on a slower connection.
   await Promise.all([
