@@ -4972,5 +4972,147 @@ const EXERCISES = [
    "Kracht"
   ],
   "video": null
+ },
+ {
+  "id": 254,
+  "naam": "Wandelen op Hielen",
+  "maand": "September 2026",
+  "bron": "Kine (Febe)",
+  "level": null,
+  "sets_reps": "5x heen en terug",
+  "beschrijving": "1. Wandel een lengte enkel steunend op je hielen Focus: tibialis anterior (schenen)",
+  "materiaal": [
+   "Geen (bodyweight)"
+  ],
+  "spiergroep": [
+   "Kuiten"
+  ],
+  "type": [
+   "Kracht"
+  ],
+  "video": null
+ },
+ {
+  "id": 255,
+  "naam": "Side Plank op Knieën",
+  "maand": "September 2026",
+  "bron": "Kine (Febe)",
+  "level": null,
+  "sets_reps": "2x10",
+  "beschrijving": "1. Start op je zij met een rekker rond de knieën 2. Buig zowel je heupen als je knieën en hef je heup van de grond 3. Strek je heupen en hef je bovenste been van je onderste 4. Buig je heupen terug en leg je benen terug op elkaar zonder met je heup de grond te raken Focus: Abductoren, core",
+  "materiaal": [
+   "Rekker/elastiek"
+  ],
+  "spiergroep": [
+   "Abductoren",
+   "Core"
+  ],
+  "type": [
+   "Kracht"
+  ],
+  "video": null
+ },
+ {
+  "id": 256,
+  "naam": "Eénbenige Squat met Bal tegen Muur Duwen",
+  "maand": "September 2026",
+  "bron": "Kine (Febe)",
+  "level": null,
+  "sets_reps": "10x5\"",
+  "beschrijving": "1. Start steunend op je linkerbeen en hou een zitbal omhoog tussen je rechterknie en de muur 2. Buig zo diep mogelijk door je linkerknie 3. Duw vanuit deze positie beide knieën naar buiten 4. Hou 5\" aan 5. Keer terug naar startpositie Focus: Kracht quadriceps, abductoren",
+  "materiaal": [
+   "Swiss ball"
+  ],
+  "spiergroep": [
+   "Quadriceps",
+   "Abductoren"
+  ],
+  "type": [
+   "Kracht"
+  ],
+  "video": null
+ },
+ {
+  "id": 257,
+  "naam": "Stabiliteit met Rekker rond Heup",
+  "maand": "September 2026",
+  "bron": "Kine (Febe)",
+  "level": null,
+  "sets_reps": "2x10",
+  "beschrijving": "1. Ga naast de roeier staan met een lange rekker rond je heup 2. Steun op het been dichtst bij de roeier 3. Buig licht door de knie van je steunbeen en tik met je ander been de grond zo ver mogelijk achter je 4. Breng je niet-steun been naar voor en hou evenwicht Focus: evenwicht, heupstabiliteit",
+  "materiaal": [
+   "Rekker/elastiek"
+  ],
+  "spiergroep": [
+   "Stabiliteit/evenwicht",
+   "Heupen"
+  ],
+  "type": [
+   "Stabiliteit"
+  ],
+  "video": null
+ },
+ {
+  "id": 258,
+  "naam": "Hip Hinge met VW-oefening",
+  "maand": "September 2026",
+  "bron": "Kine (Febe)",
+  "level": null,
+  "sets_reps": "2x10",
+  "beschrijving": "1. Start vanuit stand met een gewicht in beide handen 2. Buig lichtjes door de knieën en buig je romp voorover vanuit je heupen (zorg dat je rug goed recht blijft) 3. Hef de gewichten omhoog met je boven armen in een hoek van 90° met je romp en je ellebogen 90° geplooid en je handen naar de grond gericht 4. Draai je onderarmen omhoog zodat ze horizontaal komen 5. Strek je armen recht naar voor uit 6. Breng je armen terug naar beneden Focus: rug, schouders",
+  "materiaal": [
+   "Dumbells"
+  ],
+  "spiergroep": [
+   "Rug",
+   "Schouders"
+  ],
+  "type": [
+   "Kracht"
+  ],
+  "video": null
+ },
+ {
+  "id": 259,
+  "naam": "Superman op Bankje",
+  "maand": "September 2026",
+  "bron": "Kine (Febe)",
+  "level": null,
+  "sets_reps": "2x10",
+  "beschrijving": "1. Start vanuit handen en knieën steun op het bankje met een gewicht in je linkerhand 2. Strek je rechterbeen uit naar achter 3. Breng het gewicht in je linkerhand 10x omhoog Focus: schouder, core, stabiliteit",
+  "materiaal": [
+   "Dumbells",
+   "Fitnessbank"
+  ],
+  "spiergroep": [
+   "Schouders",
+   "Core",
+   "Stabiliteit/evenwicht"
+  ],
+  "type": [
+   "Kracht",
+   "Stabiliteit"
+  ],
+  "video": null
+ },
+ {
+  "id": 260,
+  "naam": "Eénbenige Heel Raise met Rekker rond Enkel",
+  "maand": "September 2026",
+  "bron": "Kine (Febe)",
+  "level": null,
+  "sets_reps": "2x10",
+  "beschrijving": "1. Start naast de roeier met de box voor je en een lange rekker rond de enkel die het dichtst bij de roeier staat. 2. Zet je andere voet op de box voor steun. 3. Doe 10 heel raises en zorg ervoor dat je je voet goed rechthoudt tegen de weerstand van de rekker. Focus: kracht kuiten, tibialis posterior (schenen), enkelstabiliteit",
+  "materiaal": [
+   "Rekker/elastiek",
+   "Plyobox"
+  ],
+  "spiergroep": [
+   "Kuiten"
+  ],
+  "type": [
+   "Kracht"
+  ],
+  "video": null
  }
 ];

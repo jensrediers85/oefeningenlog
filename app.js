@@ -30,6 +30,7 @@ let descOverrides = new Map(); // exerciseId -> custom beschrijving text
 let tagOverrides = new Map(); // exerciseId -> {type, materiaal, spiergroep}
 let repsOverrides = new Map(); // exerciseId -> sets_reps string
 let weightOverrides = new Map(); // exerciseId -> weight string (kg), only meaningful for Dumbells exercises
+let bandOverrides = new Map(); // exerciseId -> band strength string ("1".."5"), only meaningful for Rekker/elastiek exercises
 let deletedSet = new Set(); // exerciseIds (as strings) permanently removed, no in-app restore
 let hiddenSet = new Set(); // exerciseIds (as strings) hidden, restorable via "Verborgen oefeningen"
 let viewExercises = [];
@@ -39,7 +40,7 @@ const MONTH_ORDER = [
 "Juni 2024","Juli 2024","Augustus 2024","September 2024","Oktober 2024","November 2024","December 2024",
 "Januari 2025","Februari 2025","Maart 2025","April 2025","Mei 2025",
 "Juni 2025","Juli 2025","Augustus 2025","September 2025","November 2025","December 2025",
-"Januari 2026","Februari 2026","Maart 2026","April 2026","Mei 2026","Juni 2026","Juli 2026","Augustus 2026"
+"Januari 2026","Februari 2026","Maart 2026","April 2026","Mei 2026","Juni 2026","Juli 2026","Augustus 2026","September 2026"
 ];
 const monthIndex = m => MONTH_ORDER.indexOf(m);
 
@@ -265,6 +266,26 @@ async function saveWeight(exId, value){
   weightOverrides.set(exId, value);
 }
 
+async function loadBandOverrides(){
+  try{
+    await withRetry(async () => {
+      bandOverrides = new Map();
+      const qy = query(collection(db, "exerciseBands"), where("uid", "==", currentUser.uid));
+      const snap = await withTimeout(getDocs(qy), 10000, "timeout");
+      snap.forEach(d => {
+        const data = d.data();
+        bandOverrides.set(data.exerciseId, data.strength || "");
+      });
+    }, "loadBandOverrides");
+  }catch(e){ console.error("Kon elastiek-sterkte niet laden", e); }
+}
+
+async function saveBandStrength(exId, value){
+  const ref = doc(db, "exerciseBands", `${currentUser.uid}_${exId}`);
+  await setDoc(ref, { uid: currentUser.uid, exerciseId: exId, strength: value });
+  bandOverrides.set(exId, value);
+}
+
 // ===== Personal note per exercise (e.g. "laatst gedaan: 3x12") =====
 async function getNote(exId){
   try{
@@ -369,6 +390,10 @@ async function fileToCompressedDataURL(file, maxDim=900, quality=0.62){
 function activeFilterCount(){
   return state.type.size + state.materiaal.size + state.spiergroep.size;
 }
+
+const WEIGHT_MATERIALS = ["Dumbells", "Gewichtje", "Halterschijf"];
+function hasWeightMaterial(ex){ return ex.materiaal.some(m => WEIGHT_MATERIALS.includes(m)); }
+function hasBandMaterial(ex){ return ex.materiaal.includes("Rekker/elastiek"); }
 
 function escapeAttr(str){
   return String(str).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -477,11 +502,13 @@ function renderCard(ex){
   ].join("");
   const hasPhoto = photoIndex.has(String(ex.id));
   const hasNote = noteIndex.has(String(ex.id));
-  const isDumbell = ex.materiaal.includes("Dumbells");
+  const isDumbell = hasWeightMaterial(ex);
   const weight = weightOverrides.get(ex.id);
+  const bandStrength = bandOverrides.get(ex.id);
   const srText = [
     ex.sets_reps && ex.sets_reps !== "-" ? ex.sets_reps : null,
-    isDumbell && weight ? `${weight}kg` : null
+    isDumbell && weight ? `${weight}kg` : null,
+    hasBandMaterial(ex) && bandStrength ? `elastiek:${bandStrength}` : null
   ].filter(Boolean).join(" · ");
   card.innerHTML = `
     <div class="card-top">
@@ -494,11 +521,21 @@ function renderCard(ex){
   return card;
 }
 
+function normalizeExerciseName(name){
+  return name.toLowerCase().replace(/\s*\(.*?\)\s*/g, " ").replace(/[^a-z0-9 ]/g, "").replace(/\s+/g, " ").trim();
+}
+function findVariants(ex){
+  const key = normalizeExerciseName(ex.naam);
+  return viewExercises.filter(e => e.id !== ex.id && normalizeExerciseName(e.naam) === key)
+    .sort((a,b) => monthIndex(b.maand) - monthIndex(a.maand));
+}
+
 async function openDetail(ex){
   const overlay = document.getElementById("overlay");
   const sheet = document.getElementById("sheet");
 
   const tagHtml = (arr) => arr.map(t => `<span class="mini-tag">${t}</span>`).join("");
+  const variants = findVariants(ex);
 
   // Show the sheet immediately so a Firestore hiccup never blocks the UI
   overlay.hidden = false;
@@ -513,12 +550,20 @@ async function openDetail(ex){
         <input type="text" id="repsInput" class="reps-input" value="${escapeAttr(ex.sets_reps && ex.sets_reps !== "-" ? ex.sets_reps : "")}" placeholder="reps invullen">
       </span>
     </div>
+    ${variants.length ? `
+    <div class="variant-section">
+      <p class="sheet-tags-title">Variant van</p>
+      <div class="variant-list">
+        ${variants.map(v => `<button type="button" class="variant-link" data-id="${v.id}">${v.naam} <span class="variant-month">${v.maand}</span></button>`).join("")}
+      </div>
+    </div>
+    ` : ""}
     <div class="desc-section">
       <textarea id="descInput" class="desc-input" rows="4">${escapeAttr(ex.beschrijving)}</textarea>
       <p id="descStatus" style="font-size:12px;color:var(--ink-soft);margin-top:6px;"></p>
     </div>
 
-    ${ex.materiaal.includes("Dumbells") ? `
+    ${hasWeightMaterial(ex) ? `
     <div class="weight-section">
       <p class="sheet-tags-title">Gewicht (dumbells)</p>
       <div class="weight-input-wrap">
@@ -528,6 +573,16 @@ async function openDetail(ex){
         <button type="button" id="weightPlus" class="weight-step-btn">＋</button>
       </div>
       <p id="weightStatus" style="font-size:12px;color:var(--ink-soft);margin-top:6px;"></p>
+    </div>
+    ` : ""}
+
+    ${hasBandMaterial(ex) ? `
+    <div class="band-section">
+      <p class="sheet-tags-title">Sterkte elastiek</p>
+      <div class="band-chip-row" id="bandChipRow">
+        ${[1,2,3,4,5].map(n => `<button type="button" class="band-chip${String(n)===String(bandOverrides.get(ex.id)||"") ? " on" : ""}" data-val="${n}">${n}</button>`).join("")}
+      </div>
+      <p id="bandStatus" style="font-size:12px;color:var(--ink-soft);margin-top:6px;"></p>
     </div>
     ` : ""}
 
@@ -589,6 +644,13 @@ async function openDetail(ex){
         console.error("Kon oefening niet verbergen", err);
         alert("Er ging iets mis. Probeer opnieuw.");
       }
+    });
+    sheet.querySelectorAll(".variant-link").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const targetId = parseInt(btn.dataset.id, 10);
+        const target = viewExercises.find(e => e.id === targetId);
+        if(target) openDetail(target);
+      });
     });
     sheet.querySelector("#deleteExerciseBtn").addEventListener("click", async () => {
       const ok = confirm(`"${ex.naam}" verwijderen uit je lijst? Dit kan niet ongedaan worden gemaakt in de app.`);
@@ -708,6 +770,35 @@ async function openDetail(ex){
     }
   }catch(err){
     console.error("Fout bij opbouwen van gewicht-veld", err);
+  }
+
+  // ===== Elastic band strength (1-5) =====
+  try{
+    const bandRow = sheet.querySelector("#bandChipRow");
+    if(bandRow){
+      const bandStatus = sheet.querySelector("#bandStatus");
+      bandRow.querySelectorAll(".band-chip").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          const val = btn.dataset.val;
+          const alreadyOn = btn.classList.contains("on");
+          bandRow.querySelectorAll(".band-chip").forEach(b => b.classList.remove("on"));
+          const newVal = alreadyOn ? "" : val; // tap again to clear
+          if(!alreadyOn) btn.classList.add("on");
+          bandStatus.textContent = "Opslaan…";
+          try{
+            await saveBandStrength(ex.id, newVal);
+            bandStatus.textContent = "Opgeslagen.";
+            render();
+            setTimeout(() => { if(bandStatus.textContent === "Opgeslagen.") bandStatus.textContent = ""; }, 1200);
+          }catch(err){
+            console.error(err);
+            bandStatus.textContent = "Kon niet opslaan.";
+          }
+        });
+      });
+    }
+  }catch(err){
+    console.error("Fout bij opbouwen van elastiek-veld", err);
   }
 
   // ===== Personal note =====
@@ -998,6 +1089,7 @@ async function bootApp(){
     loadDescOverrides(),
     loadNoteIndex(),
     loadWeightOverrides(),
+    loadBandOverrides(),
     loadDeletedSet(),
     loadHiddenSet()
   ]);
